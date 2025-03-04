@@ -32,10 +32,15 @@ const api = axios.create({
   },
 });
 
+// Get auth token from either localStorage or sessionStorage
+const getAuthToken = (): string | null => {
+  return localStorage.getItem('token') || sessionStorage.getItem('token');
+};
+
 // Add token to requests if available
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    const token = getAuthToken();
     if (token) {
       config.headers.Authorization = `Token ${token}`;
     }
@@ -45,27 +50,33 @@ api.interceptors.request.use(
 );
 
 // Auth functions
-export const login = async (credentials: LoginRequest): Promise<LoginResponse> => {
+export const login = async (credentials: LoginRequest, rememberMe: boolean): Promise<LoginResponse> => {
   const response = await api.post<LoginResponse>('/login/', credentials);
   
-  // Store token in localStorage
+  // Store token in localStorage or sessionStorage based on rememberMe
   if (response.data.token) {
-    localStorage.setItem('token', response.data.token);
-    localStorage.setItem('user_id', response.data.user_id.toString());
-    localStorage.setItem('is_admin', response.data.is_admin.toString());
+    const storage = rememberMe ? localStorage : sessionStorage;
+    storage.setItem('token', response.data.token);
+    storage.setItem('user_id', response.data.user_id.toString());
+    storage.setItem('is_admin', response.data.is_admin.toString());
   }
   
   return response.data;
 };
 
 export const logout = () => {
+  // Clear from both storage types to ensure complete logout
   localStorage.removeItem('token');
   localStorage.removeItem('user_id');
   localStorage.removeItem('is_admin');
+  sessionStorage.removeItem('token');
+  sessionStorage.removeItem('user_id');
+  sessionStorage.removeItem('is_admin');
 };
 
 export const getCurrentUser = async (): Promise<User> => {
-  const isAdmin = localStorage.getItem('is_admin') === 'true';
+  const isAdmin = localStorage.getItem('is_admin') === 'true' || 
+                  sessionStorage.getItem('is_admin') === 'true';
   const endpoint = isAdmin ? '/admin-dashboard/' : '/user-dashboard/';
   
   const response = await api.get(endpoint);
@@ -73,11 +84,12 @@ export const getCurrentUser = async (): Promise<User> => {
 };
 
 export const isAuthenticated = (): boolean => {
-  return localStorage.getItem('token') !== null;
+  return getAuthToken() !== null;
 };
 
 export const isAdmin = (): boolean => {
-  return localStorage.getItem('is_admin') === 'true';
+  return localStorage.getItem('is_admin') === 'true' || 
+         sessionStorage.getItem('is_admin') === 'true';
 };
 
 export default api;

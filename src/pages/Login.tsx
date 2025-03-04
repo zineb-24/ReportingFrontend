@@ -19,7 +19,7 @@ const LoginPage: React.FC = () => {
     setError(null);
 
     try {
-      const response = await login({ email, password });
+      const response = await login({ email, password }, rememberMe);
       
       // Navigate based on user role
       if (response.is_admin) {
