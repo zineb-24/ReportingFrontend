@@ -1,0 +1,316 @@
+/* AdminDashboard.css */
+.admin-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  /* Header Styles */
+  .admin-header {
+    background-color: #2196F3;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1.5rem;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 65px;
+  }
+  
+  .logo-container {
+    display: flex;
+    align-items: center;
+    margin-top: 25px;
+    margin-left: 10px;
+  }
+  
+  .logo-image {
+    height: 45px;
+    width: auto;
+  }
+  
+  .header-title {
+    font-size: 1.25rem;
+    font-weight: 400;
+    margin: 0;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+  }
+  
+  .user-profile {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .profile-circle {
+    background-color: white;
+    border-radius: 50%;
+    padding: 0.35rem;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.5rem;
+  }
+  
+  .profile-icon {
+    color: #2196F3;
+    width: 24px;
+    height: 24px;
+  }
+  
+  .chevron-icon {
+    width: 20px;
+    height: 20px;
+    color: white;
+  }
+  
+  /* Main Content Layout */
+  .admin-content {
+    display: flex;
+    flex: 1;
+    margin-top: 65px; /* Match header height */
+    height: calc(100vh - 65px);
+  }
+  
+  /* Sidebar Styles */
+  .admin-sidebar {
+    width: 200px; /* make sidebar narrower or wider */
+    background-color: white;
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: fixed;
+    top: 65px; /* Position below header */
+    left: 0;
+    bottom: 0;
+    z-index: 5;
+    overflow-y: auto; /* Allow scrolling within sidebar if needed */
+  }
+  
+  .sidebar-nav {
+    padding: 0.75rem 0; /* Top spacing */
+    flex-grow: 1;
+  }
+  
+  .sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem; /* Add gap between list items */
+  }
+  
+  .sidebar-nav li {
+    padding: 0;
+    margin: 0.5rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center the inner div */
+    color: #64748b;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    position: relative;
+  }
+  
+  .sidebar-nav li > div {
+    display: flex;
+    align-items: center;
+    gap: 1rem; /* spacing between icon and text */
+    padding: 0.85rem 1.5rem;
+    width: 90%; /* Make the div narrower */
+    border-radius: 8px;
+  }
+  
+  .sidebar-nav li:hover > div {
+    background-color: #f0f7ff;
+    color: #2196F3;
+  }
+  
+  .sidebar-nav li.active > div {
+    color: #2196F3;
+    background-color: #e0f7ff;
+    font-weight: 500;
+  }
+  
+  .menu-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+  
+  .sidebar-nav li .dumbbell-icon {
+    width: 24px ;
+    height: 24px;
+  }
+
+  .sidebar-logout {
+    width: 90%;
+    margin: 1rem auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Keep left alignment */
+    padding-left: 1.75rem; /* Increase left padding to move content to the right */
+    gap: 1rem;
+    background-color: #fee2e2;
+    color: #ef4444;
+    border: none;
+    border-radius: 8px;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-bottom: 2rem; /* Add space at bottom of sidebar */
+  }
+  
+  .sidebar-logout:hover {
+    background-color: #fecaca;
+  }
+  
+  .logout-icon {
+    width: 20px;
+    height: 20px;
+  }
+  
+  /* Main Content Area */
+  .main-content {
+    flex: 1;
+    padding: 1.5rem 2.5rem;
+    background-color: #f1f5f9;
+    margin-left: 200px; /* Main content adjustement to the right */
+    min-height: calc(100vh - 65px);
+    overflow-y: auto;
+  }
+  
+  .page-title {
+    margin-bottom: 1.5rem;
+    padding-left: 0.5rem;
+  }
+  
+  .page-title h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #334155;
+    margin: 0;
+  }
+  
+  /* Stats Cards */
+  .stats-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .stat-card {
+    background-color: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .stat-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .stat-info {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .stat-title {
+    font-size: 1rem;
+    color: #64748b;
+    margin: 0 0 0.5rem;
+  }
+  
+  .stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+  }
+  
+  .stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .stat-icon svg {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .user-icon {
+    background-color: #e0f2fe;
+    color: #0ea5e9;
+  }
+  
+  .gym-icon {
+    background-color: #fee2e2;
+    color: #ef4444;
+  }
+  
+  .admin-icon {
+    background-color: #dbeafe;
+    color: #3b82f6;
+  }
+  
+  .dashboard-placeholder {
+    background-color: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .dashboard-placeholder h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #334155;
+    margin: 0 0 1rem;
+  }
+  
+  .dashboard-placeholder p {
+    color: #64748b;
+    margin: 0;
+  }
+  
+  /* Mobile responsiveness */
+  @media (max-width: 768px) {
+    .admin-sidebar {
+      position: static;
+      width: 100%;
+      height: auto;
+    }
+    
+    .main-content {
+      margin-left: 0;
+    }
+    
+    .admin-content {
+      flex-direction: column;
+    }
+    
+    .stats-cards {
+      grid-template-columns: 1fr;
+    }
+  }
