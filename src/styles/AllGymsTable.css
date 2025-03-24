@@ -1,0 +1,260 @@
+/* AllGymsTable.css */
+.page-container {
+    width: 100%;
+  }
+  
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-left: 0.5rem;
+  }
+  
+  .page-header h2 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #334155;
+    margin: 0;
+  }
+  
+  .add-gym-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .add-gym-button:hover:not(:disabled) {
+    background-color: #1e88e5;
+  }
+  
+  .add-gym-button:disabled {
+    background-color: #90caf9;
+    cursor: not-allowed;
+  }
+  
+  .add-icon {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .all-gyms-table-container {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 100%; /* Ensure container takes full width */
+  }
+  
+  /* Updated header to include search and sort controls */
+  .all-gyms-header {
+    background-color: #42a5f5;
+    color: white;
+    padding: 0.75rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0rem;
+  }
+  
+  .all-gyms-search-container {
+    position: relative;
+    width: 250px;
+  }
+  
+  .all-gyms-search-input {
+    width: 100%;
+    padding: 0.5rem 0.75rem 0.5rem 2.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  
+  .all-gyms-search-input:focus {
+    border-color: #ffffff;
+    box-shadow: 0 0 0 1px rgba(33, 150, 243, 0.1);
+  }
+  
+  .all-gyms-search-icon {
+    position: absolute;
+    top: 50%;
+    left: 0.75rem;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: #ffffff; /* Dark color for visibility */
+  }
+  
+  /* A-Z Sort button styles */
+  .all-gyms-sort-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    color: #64748b;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .all-gyms-sort-button:hover {
+    background-color: #e0f7ff;
+    color: #2196F3;
+  }
+  
+  .all-gyms-sort-icon {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .table-responsive {
+    overflow-x: auto;
+  }
+  
+  .gyms-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* This ensures equal column widths */
+  }
+  
+  .gyms-table th {
+    background-color: #e6f2ff;
+    color: #64748b;
+    font-weight: 600;
+    text-align: left;
+    padding: 0.75rem 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  /* Specific fixes for the Date Created column */
+  .gyms-table th:last-child {
+    text-align: center;
+    padding-left: 10rem; /* Add extra padding to the left */
+  }
+  
+  .gyms-table td:last-child {
+    text-align: center;
+    padding-left: 10rem; /* Match the header padding */
+  }
+  
+  .gyms-table td {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+    color: #334155;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+  }
+  
+  .gyms-table tr:last-child td {
+    border-bottom: none;
+  }
+  
+  .gyms-table tr:hover {
+    background-color: #f8fafc;
+  }
+  
+  .gym-link, .user-link {
+    color: #2196F3;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .gym-link:hover, .user-link:hover {
+    text-decoration: underline;
+  }
+  
+  .linked-users {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .no-users {
+    color: #94a3b8;
+    font-style: italic;
+  }
+  
+  .date-created {
+    color: #64748b;
+    text-align: center;
+  }
+  
+  .pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    border-top: 1px solid #e2e8f0;
+    color: #64748b;
+    font-size: 0.875rem;
+  }
+  
+  .pagination-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .pagination-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid #e2e8f0;
+    background-color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #64748b;
+    transition: all 0.2s;
+  }
+  
+  .pagination-button:hover:not(:disabled) {
+    background-color: #f0f7ff;
+    color: #2196F3;
+  }
+  
+  .pagination-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .pagination-icon {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .loading-indicator {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+    color: #64748b;
+  }
+
+  /* Specific fixes for the Phone Number column */
+.gyms-table th:nth-child(3) {
+    padding-left: 5rem; /* Add extra padding to the left */
+  }
+  
+  .gyms-table td:nth-child(3) {
+    padding-left: 5rem; /* Match the header padding */
+  }
+  
+  /* Add this class to the phone number cell if you want to style it separately */
+  .phone-number {
+    color: #334155;
+    text-align: center;
+  }

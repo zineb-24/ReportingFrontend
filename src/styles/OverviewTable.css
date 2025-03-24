@@ -1,0 +1,287 @@
+/* User Overview Table Styles */
+.overview-table-container {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-top: 1.5rem;
+    overflow: hidden;
+  }
+  
+  .overview-header {
+    background-color: #42a5f5;
+    color: white;
+    padding: 0.5rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0rem;
+  }
+  
+  .overview-header h3 {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: white;
+  }
+  
+  .overview-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 0.5rem;
+  }
+  
+  .table-responsive {
+    overflow-x: auto;
+  }
+  
+  .users-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* This ensures equal column widths */
+  }
+  
+  /* Define column widths to ensure equal spacing */
+  .users-table th:nth-child(1) {
+    width: 25%; /* Users column */
+  }
+  
+  .users-table th:nth-child(2) {
+    width: 35%; /* Linked Gyms column */
+  }
+  
+  .users-table th:nth-child(3) {
+    width: 25%; /* Last Login column */
+  }
+  
+  .users-table th:nth-child(4) {
+    width: 15%; /* Active column */
+  }
+  
+  .users-table th {
+    background-color: #d8ecfb;
+    color: #64748b;
+    font-weight: 600;
+    text-align: left;
+    padding: 0.75rem 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  /* Center align the Active column header */
+  .users-table th:last-child,
+  .active-column-header {
+    text-align: center;
+  }
+  
+  .users-table td {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+    color: #334155;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* Center align all cells in the Active column */
+  .users-table td:last-child {
+    text-align: center;
+  }
+  
+  .users-table tr:last-child td {
+    border-bottom: none;
+  }
+  
+  .user-link, .gym-link {
+    color: #2196f3;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .user-link:hover, .gym-link:hover {
+    text-decoration: underline;
+  }
+  
+  .linked-gyms {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .no-gyms {
+    color: #94a3b8;
+    font-style: italic;
+  }
+  
+  .active-indicator, .inactive-indicator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+  }
+  
+  .active-icon {
+    width: 24px;
+    height: 24px;
+    color: #4ade80;
+    margin: 0 auto; /* Ensures horizontal centering */
+  }
+  
+  .inactive-icon {
+    width: 24px;
+    height: 24px;
+    color: #f87171;
+    margin: 0 auto; /* Ensures horizontal centering */
+  }
+  
+  .pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    border-top: 1px solid #e2e8f0;
+    color: #64748b;
+    font-size: 0.875rem;
+  }
+  
+  .pagination-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .pagination-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid #e2e8f0;
+    background-color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #64748b;
+    transition: all 0.2s;
+  }
+  
+  .pagination-button:hover:not(:disabled) {
+    background-color: #f0f7ff;
+    color: #2196f3;
+  }
+  
+  .pagination-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .pagination-icon {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .loading-indicator {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+    color: #64748b;
+  }
+
+  /* Specific fixes for the Active column */
+  .users-table th:last-child {
+    text-align: center;
+    padding-left: 5.5rem; /* Add extra padding to the left */
+  }
+  
+  .users-table td:last-child {
+    text-align: center;
+    padding-left: 5.5rem; /* Match the header padding */
+  }
+  
+  /* Adjust the active indicator to align with the new spacing */
+  .active-indicator, .inactive-indicator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-right: 0rem; /* Slight adjustment to center within the cell */
+  }
+
+  .table-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    background-color: transparent; /* Remove any background */
+    border-radius: 6px;
+    padding: 0.5rem;
+  }
+  
+  .search-container {
+    position: relative;
+    width: 250px;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 0.5rem 0.75rem 0.5rem 2.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  
+  .search-input:focus {
+    border-color: #e2e8f0;
+    box-shadow: 0 0 0 1px rgba(33, 150, 243, 0.1);
+  }
+  
+  .search-icon {
+    position: absolute;
+    top: 50%;
+    left: 0.75rem;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: #ffffff;
+  }
+  
+  .sort-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    color: #64748b;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .sort-button:hover {
+    background-color: #e0f7ff;
+    color: #2196F3;
+  }
+  
+  .sort-icon {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .no-results {
+    padding: 2rem;
+    text-align: center;
+    color: #64748b;
+    font-style: italic;
+  }
+
+  /* Last login styles */
+  .recent-login {
+    color: #94a3b8; 
+  }
+  
+  .old-login {
+    color: #94a3b8;
+  }
+  
+  .never-login {
+    color: #94a3b8 !important;
+    font-style: italic;
+  }

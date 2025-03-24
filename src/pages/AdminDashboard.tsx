@@ -2,9 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api, { logout, isAdmin } from '../services/api';
 import '../styles/AdminDashboard.css';
+import UserOverviewTable from '../components/OverviewTable';
+import AllUsersTable from '../components/AllUsersTable';
+import AllGymsTable from '../components/AllGymsTable';
+import AllLinksTable from '../components/AllLinksTable';
 
 interface AdminStats {
-  total_users: number;
+  total_gyms: number;
   admin_users: number;
   regular_users: number;
 }
@@ -54,8 +58,8 @@ const AdminDashboard: React.FC = () => {
 
   const handleMenuClick = (menuItem: string) => {
     setActiveMenuItem(menuItem);
-    // In a real app, you would navigate to different routes
-    // For now, we're just changing the active menu item
+    /*The handleMenuClick function updates the activeMenuItem 
+    state variable when a sidebar menu item is clicked. */
   };
 
   if (loading) {
@@ -116,7 +120,36 @@ const AdminDashboard: React.FC = () => {
               >
                 <div>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="menu-icon">
-                  <path fillRule="evenodd" d="M1.5 5.625c0-1.036.84-1.875 1.875-1.875h17.25c1.035 0 1.875.84 1.875 1.875v12.75c0 1.035-.84 1.875-1.875 1.875H3.375A1.875 1.875 0 011.5 18.375V5.625zM21 9.375A.375.375 0 0020.625 9h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zm0 3.75a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zm0 3.75a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zM10.875 18.75a.375.375 0 00.375-.375v-1.5a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5zM3.375 15h7.5a.375.375 0 00.375-.375v-1.5a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375zm0-3.75h7.5a.375.375 0 00.375-.375v-1.5A.375.375 0 0010.875 9h-7.5A.375.375 0 003 9.375v1.5c0 .207.168.375.375.375z" clipRule="evenodd" />
+                  <path d="M0.385 11.092h23.229V13.044H0.385z"/>
+                  <path d="M8.948 11.092h6.103v1.952H8.948z"/>
+                  <path d="M15.186 11.092a0.26 0.26 0 0 0 0.26 0.26 0.26 0.26 0 0 0 0.26-0.26H15.186zM15.932 11.092c0 0.143 0.116 0.26 0.26 0.26s0.26-0.117 0.26-0.26h-0.52zM16.687 11.092a0.26 0.26 0 0 0 0.26 0.26 0.26 0.26 0 0 0 0.26-0.26H16.687z"/>
+                  <circle cx="15.812" cy="11.524" r="0.26"/>
+                  <circle cx="16.558" cy="11.524" r="0.26"/>
+                  <circle cx="15.812" cy="12.507" r="0.26"/>
+                  <path d="M15.066 11.352a0.26 0.26 0 0 1 0 0.52v-0.52zM15.066 12.767a0.26 0.26 0 0 0 0-0.52v0.52z"/>
+                  <circle cx="16.558" cy="12.507" r="0.26"/>
+                  <circle cx="17.303" cy="11.524" r="0.26"/>
+                  <circle cx="17.303" cy="12.507" r="0.26"/>
+                  <circle cx="15.444" cy="12.016" r="0.26"/>
+                  <circle cx="16.185" cy="12.016" r="0.26"/>
+                  <circle cx="16.93" cy="12.016" r="0.26"/>
+                  <path d="M15.7 12.986c0-0.143-0.116-0.26-0.26-0.26s-0.26 0.117-0.26 0.26h0.52zM16.445 12.986c0-0.143-0.116-0.26-0.26-0.26s-0.26 0.117-0.26 0.26h0.52zM17.19 12.986a0.26 0.26 0 0 0-0.26-0.26 0.26 0.26 0 0 0-0.26 0.26h0.52zM8.826 11.092c0 0.143-0.116 0.26-0.26 0.26s-0.26-0.117-0.26-0.26h0.52zM8.081 11.092c0 0.143-0.116 0.26-0.26 0.26s-0.26-0.117-0.26-0.26h0.52zM7.335 11.092c0 0.143-0.116 0.26-0.26 0.26s-0.26-0.117-0.26-0.26h0.52z"/>
+                  <circle cx="8.201" cy="11.524" r="0.26"/>
+                  <circle cx="7.456" cy="11.524" r="0.26"/>
+                  <circle cx="8.201" cy="12.507" r="0.26"/>
+                  <path d="M8.948 11.352a0.26 0.26 0 0 0 0 0.52v-0.52zM8.948 12.767a0.26 0.26 0 0 1 0-0.52v0.52z"/>
+                  <circle cx="7.456" cy="12.507" r="0.26"/>
+                  <circle cx="6.71" cy="11.524" r="0.26"/>
+                  <circle cx="6.71" cy="12.507" r="0.26"/>
+                  <circle cx="8.569" cy="12.016" r="0.26"/>
+                  <circle cx="7.824" cy="12.016" r="0.26"/>
+                  <circle cx="7.079" cy="12.016" r="0.26"/>
+                  <path d="M8.313 12.986c0-0.143 0.116-0.26 0.26-0.26s0.26 0.117 0.26 0.26h-0.52zM7.568 12.986c0-0.143 0.116-0.26 0.26-0.26s0.26 0.117 0.26 0.26h-0.52zM6.822 12.986c0-0.143 0.116-0.26 0.26-0.26s0.26 0.117 0.26 0.26h-0.52zM19.658 15.174c0 0.537 0.439 0.976 0.975 0.976h1.429c0.537 0 0.976-0.439 0.976-0.976V8.871c0-0.537-0.439-0.976-0.976-0.976h-1.429c-0.537 0-0.976 0.439-0.976 0.976l0 6.303z"/>
+                  <path d="M20.633 7.895c-0.537 0-0.976 0.439-0.976 0.976v6.303c0 0.537 0.439 0.976 0.976 0.976h0.715V7.895h-0.715z"/>
+                  <path d="M17.502 17.288c0 0.537 0.439 0.976 0.976 0.976h1.461c0.537 0 0.976-0.439 0.976-0.976V6.751c0-0.537-0.439-0.976-0.976-0.976h-1.461c-0.537 0-0.976 0.439-0.976 0.976v10.537zM4.343 15.174c0 0.537-0.439 0.976-0.976 0.976H1.938c-0.537 0-0.976-0.439-0.976-0.976V8.871c0-0.537 0.439-0.976 0.976-0.976h1.429c0.537 0 0.976 0.439 0.976 0.976v6.303z"/>
+                  <path d="M3.367 7.895c0.537 0 0.976 0.439 0.976 0.976v6.303c0 0.537-0.439 0.976-0.976 0.976h-0.715V7.895h0.715z"/>
+                  <path d="M6.499 17.288c0 0.537-0.439 0.976-0.976 0.976H4.062c-0.537 0-0.976-0.439-0.976-0.976V6.751c0-0.537 0.439-0.976 0.976-0.976h1.461c0.537 0 0.976 0.439 0.976 0.976v10.537z"/>
+                  <path d="M23.647 10.654h-0.204v-1.788c0-0.752-0.612-1.363-1.363-1.363h-0.76v-0.758c0-0.752-0.611-1.364-1.363-1.364h-1.461c-0.752 0-1.363 0.612-1.363 1.364v3.909H6.905V6.746c0-0.752-0.612-1.364-1.363-1.364H4.081c-0.752 0-1.363 0.612-1.363 1.364v0.758h-0.76c-0.752 0-1.363 0.611-1.363 1.363v1.788H0.387A0.387 0.387 0 0 0 0 11.041v1.953a0.387 0.387 0 0 0 0.387 0.387h0.204v1.787c0 0.752 0.612 1.363 1.363 1.363h0.76v0.759c0 0.752 0.612 1.364 1.363 1.364h1.461c0.752 0 1.363-0.612 1.363-1.364v-3.909h10.222v3.909c0 0.752 0.612 1.364 1.363 1.364h1.461c0.752 0 1.363-0.612 1.363-1.364v-0.758h0.76c0.752 0 1.364-0.611 1.364-1.363v-1.788h0.204a0.387 0.387 0 0 0 0.387-0.387v-1.953a0.387 0.387 0 0 0-0.387-0.387zM2.716 15.755H1.958c-0.325 0-0.588-0.264-0.588-0.588V8.865c0-0.325 0.264-0.589 0.588-0.589h0.758v7.479zm3.412 1.531c0 0.325-0.264 0.589-0.588 0.589H4.08c-0.325 0-0.588-0.264-0.588-0.589V6.746c0-0.325 0.264-0.589 0.588-0.589h1.461c0.325 0 0.588 0.264 0.588 0.589v10.54zm2.442-4.683H7.329v-1.178h1.668v1.178zm6.111 0H8.954v-1.178h5.735v1.178zm2.442 0h-1.667v-1.178h1.667v1.178zm3.412 4.683c0 0.325-0.264 0.589-0.588 0.589h-1.461c-0.325 0-0.588-0.264-0.588-0.589V6.746c0-0.325 0.264-0.589 0.588-0.589h1.461c0.325 0 0.588 0.264 0.588 0.589v10.54zm2.121-2.12c0 0.325-0.264 0.588-0.588 0.588h-0.758V8.276h0.758c0.325 0 0.588 0.264 0.588 0.589v6.301z"/>
                 </svg>
                   All Gyms
                 </div>
@@ -141,86 +174,75 @@ const AdminDashboard: React.FC = () => {
             Logout
           </button>
         </aside>
-
+        
         {/* Main Content */}
-        <main className="main-content">
-          <div className="page-title">
-            <h2>Welcome, {user?.name || 'admin'}</h2>
-          </div>
+          <main className="main-content">
 
-          {/* Stats Cards */}
-          <div className="stats-cards">
-            <div className="stat-card">
-              <div className="stat-content">
-                <div className="stat-info">
-                  <p className="stat-title">Total Users</p>
-                  <p className="stat-value">{stats ? stats.total_users : 12}</p>
-                </div>
-                <div className="stat-icon user-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                    <path fillRule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z" clipRule="evenodd" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            <div className="stat-card">
-              <div className="stat-content">
-                <div className="stat-info">
-                  <p className="stat-title">Total Gyms</p>
-                  <p className="stat-value">18</p>
-                </div>
-                <div className="stat-icon gym-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                    <path fillRule="evenodd" d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" clipRule="evenodd" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            <div className="stat-card">
-              <div className="stat-content">
-                <div className="stat-info">
-                  <p className="stat-title">Total Admins</p>
-                  <p className="stat-value">{stats ? stats.admin_users : 3}</p>
-                </div>
-                <div className="stat-icon admin-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                    <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-1.72 6.97a.75.75 0 10-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 101.06 1.06L12 13.06l1.72 1.72a.75.75 0 101.06-1.06L13.06 12l1.72-1.72a.75.75 0 10-1.06-1.06L12 10.94l-1.72-1.72z" clipRule="evenodd" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Placeholder for future content */}
-          <div className="dashboard-placeholder">
+            {/* Welcome message - Only show on dashboard */}
             {activeMenuItem === 'dashboard' && (
-              <div>
-                <h3>Dashboard Content</h3>
-                <p>This is where additional dashboard content will go.</p>
+              <div className="page-title">
+                <h2><span className="welcome-text">Welcome, </span>{user?.name || 'admin'}</h2>
               </div>
             )}
+
+            {/* Stats Cards - Only show on dashboard */}
+            {activeMenuItem === 'dashboard' && (
+              <div className="stats-cards">
+                <div className="stat-card">
+                  <div className="stat-content">
+                    <div className="stat-info">
+                      <p className="stat-title">Total Users</p>
+                      <p className="stat-value">{stats ? stats.regular_users : 0}</p>
+                    </div>
+                    <div className="stat-icon user-icon">
+                      <img src="/src/assets/user.png" alt="Users" className="stat-icon-image" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="stat-card">
+                  <div className="stat-content">
+                    <div className="stat-info">
+                      <p className="stat-title">Total Gyms</p>
+                      <p className="stat-value">{stats ? stats.total_gyms : 0}</p>
+                    </div>
+                    <div className="stat-icon gym-icon">
+                      <img src="/src/assets/gym3.png" alt="Gyms" className="stat-icon-image" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="stat-card">
+                  <div className="stat-content">
+                    <div className="stat-info">
+                      <p className="stat-title">Total Admins</p>
+                      <p className="stat-value">{stats ? stats.admin_users : 0}</p>
+                    </div>
+                    <div className="stat-icon admin-icon">
+                      <img src="/src/assets/eye.png" alt="Admins" className="stat-icon-image" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Conditional content based on active menu item */}
+            {activeMenuItem === 'dashboard' && (
+              <UserOverviewTable />
+            )}
+            
             {activeMenuItem === 'users' && (
-              <div>
-                <h3>Users Management</h3>
-                <p>Here you will be able to manage all users.</p>
-              </div>
+              <AllUsersTable />
             )}
+            
             {activeMenuItem === 'gyms' && (
-              <div>
-                <h3>Gyms Management</h3>
-                <p>Here you will be able to manage all gyms.</p>
-              </div>
+              <AllGymsTable />
             )}
+            
             {activeMenuItem === 'links' && (
-              <div>
-                <h3>User-Gym Links</h3>
-                <p>Here you will be able to manage all user-gym relationships.</p>
-              </div>
+              <AllLinksTable />
             )}
-          </div>
-        </main>
+          </main>
       </div>
     </div>
   );

@@ -206,73 +206,95 @@
     color: #334155;
     margin: 0;
   }
+
+  .welcome-text {
+    font-weight: 400; /* Lighter font weight */
+  }
   
-  /* Stats Cards */
+  /* Stats Cards with Icons */
   .stats-cards {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 1.5rem;
     margin-bottom: 2rem;
   }
-  
+
   .stat-card {
     background-color: white;
     border-radius: 10px;
-    padding: 1.5rem;
+    padding: 1rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border-left: 3.5px solid rgba(59, 162, 234, 0.8); 
   }
-  
+
   .stat-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
-  
+
   .stat-info {
     display: flex;
     flex-direction: column;
   }
-  
+
   .stat-title {
     font-size: 1rem;
     color: #64748b;
     margin: 0 0 0.5rem;
+    font-weight: 500;
   }
-  
+
   .stat-value {
-    font-size: 2rem;
+    font-size: 1.75rem;
     font-weight: 700;
     color: #0f172a;
     margin: 0;
   }
-  
+
+  /*Background circle of icons*/
   .stat-icon {
-    width: 48px;
-    height: 48px;
+    width: 65px;
+    height: 65px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
   }
-  
-  .stat-icon svg {
-    width: 28px;
-    height: 28px;
+
+  .stat-icon-image {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
   }
-  
+
+
   .user-icon {
-    background-color: #e0f2fe;
-    color: #0ea5e9;
+    background-color: #e0f7fa;
   }
-  
+
   .gym-icon {
-    background-color: #fee2e2;
-    color: #ef4444;
+    background-color: #ffebee;
   }
-  
+
   .admin-icon {
-    background-color: #dbeafe;
-    color: #3b82f6;
+    background-color: #e3f2fd;
+  }
+
+  /* Icon-specific size adjustments */
+  .user-icon img.stat-icon-image {
+    width: 34px;
+    height: 34px;
+  }
+
+  .gym-icon img.stat-icon-image {
+    width: 34px; 
+    height: 34px;
+  }
+
+  .admin-icon img.stat-icon-image {
+    width: 40px; 
+    height: 40px;
   }
   
   .dashboard-placeholder {
