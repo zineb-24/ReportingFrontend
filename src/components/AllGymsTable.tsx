@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import '../styles/AllGymsTable.css';
+import { useNavigate } from 'react-router-dom';
 
 interface GymData {
   id_salle: number;
@@ -14,6 +15,7 @@ interface GymData {
 }
 
 const AllGymsTable: React.FC = () => {
+  const navigate = useNavigate();
   const [gyms, setGyms] = useState<GymData[]>([]);
   const [filteredGyms, setFilteredGyms] = useState<GymData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -128,8 +130,7 @@ const AllGymsTable: React.FC = () => {
   };
 
   const addGym = () => {
-    // Placeholder for add gym functionality - to be implemented later
-    console.log("Add gym button clicked");
+    navigate('/admin-dashboard/add-gym');
   };
 
   if (loading) {
@@ -140,7 +141,7 @@ const AllGymsTable: React.FC = () => {
     <div className="page-container">
       <div className="page-header">
         <h2>All Gyms</h2>
-        <button onClick={addGym} className="add-gym-button" disabled>
+        <button onClick={addGym} className="add-gym-button">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="add-icon">
             <path fillRule="evenodd" d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z" clipRule="evenodd" />
           </svg>

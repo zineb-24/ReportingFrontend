@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import '../styles/AllUsersTable.css';
+import { useNavigate } from 'react-router-dom';
 
 interface UserData {
   id_user: number;
@@ -12,6 +13,7 @@ interface UserData {
 }
 
 const AllUsersTable: React.FC = () => {
+  const navigate = useNavigate();
   const [users, setUsers] = useState<UserData[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<UserData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -102,8 +104,7 @@ const AllUsersTable: React.FC = () => {
   };
 
   const addUser = () => {
-    // Placeholder for add user functionality - to be implemented later
-    console.log("Add user button clicked");
+    navigate('/admin-dashboard/add-user');
   };
 
   if (loading) {
@@ -114,7 +115,7 @@ const AllUsersTable: React.FC = () => {
     <div className="page-container">
       <div className="page-header">
         <h2>All Users</h2>
-        <button onClick={addUser} className="add-user-button" disabled>
+        <button onClick={addUser} className="add-user-button">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="add-icon">
             <path fillRule="evenodd" d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z" clipRule="evenodd" />
           </svg>

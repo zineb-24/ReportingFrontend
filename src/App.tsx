@@ -1,9 +1,12 @@
+// App.tsx
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import LoginPage from './pages/Login';
 import UserDashboard from './pages/UserDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import { isAuthenticated, isAdmin } from './services/api';
+import AddUserForm from './components/AddUserForm';
+import AddGymForm from './components/AddGymForm';
 
 // Root component to handle initial redirect
 const Root: React.FC = () => {
@@ -48,9 +51,38 @@ const App: React.FC = () => {
           element={<ProtectedRoute element={<UserDashboard />} />} 
         />
         
+        {/* Main admin dashboard */}
         <Route 
           path="/admin-dashboard" 
           element={<ProtectedRoute element={<AdminDashboard />} requireAdmin={true} />} 
+        />
+        
+        {/* Admin dashboard tabs as separate routes */}
+        <Route 
+          path="/admin-dashboard/users" 
+          element={<ProtectedRoute element={<AdminDashboard />} requireAdmin={true} />} 
+        />
+        
+        <Route 
+          path="/admin-dashboard/gyms" 
+          element={<ProtectedRoute element={<AdminDashboard />} requireAdmin={true} />} 
+        />
+        
+        <Route 
+          path="/admin-dashboard/links" 
+          element={<ProtectedRoute element={<AdminDashboard />} requireAdmin={true} />} 
+        />
+
+        {/* Add user form */}
+        <Route 
+          path="/admin-dashboard/add-user" 
+          element={<ProtectedRoute element={<AddUserForm />} requireAdmin={true} />} 
+        />
+
+        {/* Add gym form */}
+        <Route 
+          path="/admin-dashboard/add-gym" 
+          element={<ProtectedRoute element={<AddGymForm />} requireAdmin={true} />} 
         />
         
         {/* Redirect root to login */}

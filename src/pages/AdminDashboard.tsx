@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import api, { logout, isAdmin } from '../services/api';
 import '../styles/AdminDashboard.css';
 import UserOverviewTable from '../components/OverviewTable';
 import AllUsersTable from '../components/AllUsersTable';
 import AllGymsTable from '../components/AllGymsTable';
 import AllLinksTable from '../components/AllLinksTable';
+import AdminHeader from '../components/AdminHeader';
+
 
 interface AdminStats {
   total_gyms: number;
@@ -21,10 +23,25 @@ interface AdminUser {
 
 const AdminDashboard: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [user, setUser] = useState<AdminUser | null>(null);
   const [activeMenuItem, setActiveMenuItem] = useState('dashboard');
+
+  // Set active menu item based on URL path
+  useEffect(() => {
+    const path = location.pathname;
+    if (path.includes('/users')) {
+      setActiveMenuItem('users');
+    } else if (path.includes('/gyms')) {
+      setActiveMenuItem('gyms');
+    } else if (path.includes('/links')) {
+      setActiveMenuItem('links');
+    } else {
+      setActiveMenuItem('dashboard');
+    }
+  }, [location]);
 
   useEffect(() => {
     // Check if user is admin
@@ -58,8 +75,13 @@ const AdminDashboard: React.FC = () => {
 
   const handleMenuClick = (menuItem: string) => {
     setActiveMenuItem(menuItem);
-    /*The handleMenuClick function updates the activeMenuItem 
-    state variable when a sidebar menu item is clicked. */
+    
+    // Update URL based on menu selection
+    if (menuItem === 'dashboard') {
+      navigate('/admin-dashboard');
+    } else {
+      navigate(`/admin-dashboard/${menuItem}`);
+    }
   };
 
   if (loading) {
@@ -69,22 +91,7 @@ const AdminDashboard: React.FC = () => {
   return (
     <div className="admin-layout">
       {/* Header */}
-      <header className="admin-header">
-        <div className="logo-container">
-          <img src="/src/assets/LOGIFIT.png" alt="LogiFit" className="logo-image" />
-        </div>
-        <h1 className="header-title">Admin Dashboard</h1>
-        <div className="user-profile">
-          <div className="profile-circle">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="profile-icon">
-              <path fillRule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z" clipRule="evenodd" />
-            </svg>
-          </div>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="chevron-icon">
-            <path fillRule="evenodd" d="M12.53 16.28a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 011.06-1.06L12 14.69l6.97-6.97a.75.75 0 111.06 1.06l-7.5 7.5z" clipRule="evenodd" />
-          </svg>
-        </div>
-      </header>
+      <AdminHeader />
 
       <div className="admin-content">
         {/* Sidebar */}
