@@ -221,28 +221,28 @@ const AddGymForm: React.FC = () => {
   };
 
   return (
-    <div className="admin-layout">
+    <div className="agf-admin-layout">
       {/* Admin Dashboard Header */}
       <AdminHeader />
-
-      <div className="form-container">
+  
+      <div className="agf-form-container">
         {/* Form Title */}
-        <div className="form-title-bar">
+        <div className="agf-form-title-bar">
           <h2>+ Add New Gym</h2>
         </div>
         
-        <div className="add-gym-form-container">
+        <div className="agf-add-gym-form-container">
           <form onSubmit={handleSubmit}>
-            <div className="form-layout">
+            <div className="agf-form-layout">
               {/* Left Column - Link with Users */}
-              <div className="form-column">
-                <h3 className="section-title">Link with user(s)</h3>
-                <div className="form-section">
-                  <div className="form-group">
+              <div className="agf-form-column">
+                <h3 className="agf-section-title">Link with user(s)</h3>
+                <div className="agf-form-section">
+                  <div className="agf-form-group">
                     <label htmlFor="user-search">Add user(s)</label>
-                    <div className="user-search-container" ref={searchRef}>
-                      <div className="search-input-container">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="search-icon">
+                    <div className="agf-user-search-container" ref={searchRef}>
+                      <div className="agf-search-input-container">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="agf-search-icon">
                           <path fillRule="evenodd" d="M10.5 3.75a6.75 6.75 0 100 13.5 6.75 6.75 0 000-13.5zM2.25 10.5a8.25 8.25 0 1114.59 5.28l4.69 4.69a.75.75 0 11-1.06 1.06l-4.69-4.69A8.25 8.25 0 012.25 10.5z" clipRule="evenodd" />
                         </svg>
                         <input
@@ -252,17 +252,17 @@ const AddGymForm: React.FC = () => {
                           value={searchTerm}
                           onChange={handleSearchChange}
                           onFocus={handleSearchFocus}
-                          className="search-input"
+                          className="agf-search-input"
                           style={{ textIndent: '1.5rem' }}
                         />
                       </div>
                       
                       {showUsersList && filteredUsers.length > 0 && (
-                        <div className="users-dropdown">
+                        <div className="agf-users-dropdown">
                           {filteredUsers.map(user => (
                             <div 
                               key={user.id_user} 
-                              className="user-option"
+                              className="agf-user-option"
                               onClick={() => handleUserSelect(user)}
                             >
                               {user.name}
@@ -272,14 +272,14 @@ const AddGymForm: React.FC = () => {
                       )}
                     </div>
                     
-                    <div className="selected-users">
+                    <div className="agf-selected-users">
                       {selectedUsers.map(user => (
-                        <div key={user.id_user} className="selected-user-tag">
+                        <div key={user.id_user} className="agf-selected-user-tag">
                           {user.name}
                           <button 
                             type="button" 
                             onClick={() => removeUser(user.id_user)}
-                            className="remove-user-btn"
+                            className="agf-remove-user-btn"
                           >
                             ×
                           </button>
@@ -291,10 +291,10 @@ const AddGymForm: React.FC = () => {
               </div>
               
               {/* Right Column - Gym Creation */}
-              <div className="form-column">
-                <h3 className="section-title">Gym Creation</h3>
-                <div className="form-section">
-                  <div className="form-group">
+              <div className="agf-form-column">
+                <h3 className="agf-section-title">Gym Creation</h3>
+                <div className="agf-form-section">
+                  <div className="agf-form-group">
                     <label htmlFor="name">Name</label>
                     <input
                       type="text"
@@ -305,10 +305,10 @@ const AddGymForm: React.FC = () => {
                       onChange={handleInputChange}
                       className={errors.name ? 'error' : ''}
                     />
-                    {errors.name && <div className="error-message">{errors.name}</div>}
+                    {errors.name && <div className="agf-error-message">{errors.name}</div>}
                   </div>
                   
-                  <div className="form-group">
+                  <div className="agf-form-group">
                     <label htmlFor="phone">Phone</label>
                     <input
                       type="text"
@@ -319,25 +319,25 @@ const AddGymForm: React.FC = () => {
                       onChange={handleInputChange}
                       className={errors.phone ? 'error' : ''}
                     />
-                    {errors.phone && <div className="error-message">{errors.phone}</div>}
+                    {errors.phone && <div className="agf-error-message">{errors.phone}</div>}
                   </div>
                 </div>
               </div>
             </div>
             
-            {errors.form && <div className="form-error">{errors.form}</div>}
+            {errors.form && <div className="agf-form-error">{errors.form}</div>}
             
-            <div className="form-actions">
+            <div className="agf-form-actions">
               <button 
                 type="button" 
                 onClick={handleCancel} 
-                className="cancel-button"
+                className="agf-cancel-button"
               >
                 Cancel
               </button>
               <button 
                 type="submit" 
-                className="add-gym-button"
+                className="agf-add-gym-button"
                 disabled={loading}
               >
                 + Add Gym

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import '../styles/AllLinksTable.css';
+import { useNavigate } from 'react-router-dom';
 
 interface LinkData {
   id: number;
@@ -20,6 +21,7 @@ interface LinkData {
 }
 
 const AllLinksTable: React.FC = () => {
+  const navigate = useNavigate();
   const [links, setLinks] = useState<LinkData[]>([]);
   const [filteredLinks, setFilteredLinks] = useState<LinkData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -171,9 +173,16 @@ const AllLinksTable: React.FC = () => {
                   </td>
                   <td>{formatDateCreated(link.date_creation)}</td>
                   <td>
-                    <a href={`#/users/${link.id_user.id_user}`} className="user-link">
-                      {link.id_user.name}
-                    </a>
+                  <a 
+                    href="#" 
+                    className="user-link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate(`/admin-dashboard/users/${link.id_user.id_user}`);
+                    }}
+                  >
+                    {link.id_user.name}
+                  </a>
                   </td>
                   <td>
                     <a href={`#/gyms/${link.id_salle.id_salle}`} className="gym-link">

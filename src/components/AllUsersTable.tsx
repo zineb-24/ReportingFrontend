@@ -162,9 +162,16 @@ const AllUsersTable: React.FC = () => {
               {currentUsers.map((user) => (
                 <tr key={user.id_user}>
                   <td>
-                    <a href={`#/users/${user.id_user}`} className="user-link">
-                      {user.name}
-                    </a>
+                  <a 
+                    href="#" 
+                    className="user-link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate(`/admin-dashboard/users/${user.id_user}`);
+                    }}
+                  >
+                    {user.name}
+                  </a>
                   </td>
                   <td>{user.email}</td>
                   <td>{user.phone}</td>

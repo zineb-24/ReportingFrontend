@@ -1,0 +1,461 @@
+.us-admin-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  /* Ensure the form container takes up the full width and height */
+  .us-form-container {
+    padding: 1.5rem;
+    background-color: #f1f5f9;
+    margin-top: 65px; /* Match header height */
+    min-height: calc(100vh - 65px);
+  }
+  
+  /* Form title bar - blue section with "User Settings" text */
+  .us-form-title-bar {
+    background-color: #42a5f5;
+    color: white;
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 0; /* Connect directly to form below */
+    border-radius: 8px 8px 0 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+  }
+  
+  .us-form-title-bar h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+  }
+  
+  .us-settings-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 0.5rem;
+  }
+  
+  /* Main form container */
+  .us-user-form-container {
+    background-color: white;
+    border-radius: 0 0 8px 8px; /* Only rounded at the bottom */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin: 0 auto;
+    max-width: 100%;
+  }
+  
+  /* Form layout - the two sections side by side */
+  .us-form-layout {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 1.5rem;
+    gap: 2rem;
+  }
+  
+  /* Column container */
+  .us-form-column {
+    flex: 1;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Section title - outside the dashed container */
+  .us-section-title {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    color: #334155;
+    font-weight: 500;
+  }
+  
+  /* Individual form sections with dashed borders */
+  .us-form-section {
+    flex: 1;
+    border: 1px dashed #e2e8f0;
+    border-radius: 8px;
+    padding: 1.5rem;
+  }
+  
+  /* Form input groups */
+  .us-form-group {
+    margin-bottom: 1.25rem;
+    position: relative;
+  }
+  
+  /* Last form group shouldn't have a bottom margin */
+  .us-form-group:last-child {
+    margin-bottom: 0;
+  }
+  
+  .us-form-group label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: #334155;
+  }
+  
+  .us-form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    background-color: #f8fafc;
+  }
+  
+  .us-form-group input::placeholder {
+    color: #94a3b8;
+  }
+  
+  .us-form-group input:focus {
+    outline: none;
+    border-color: #2196F3;
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
+  }
+  
+  .us-form-group input.us-error {
+    border-color: #ef4444;
+  }
+  
+  .us-readonly-field {
+    background-color: #f1f5f9 !important;
+    color: #64748b;
+    cursor: not-allowed;
+  }
+  
+  .us-error-message {
+    color: #ef4444;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+  }
+  
+  /* Linked Gyms Section */
+  .us-linked-gyms {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .us-linked-gym-tag {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #e0f7f0;
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    color: #334155;
+  }
+  
+  .us-no-gyms {
+    color: #94a3b8;
+    font-style: italic;
+    padding: 0.5rem 0;
+  }
+  
+  .us-remove-gym-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    color: #64748b;
+  }
+  
+  .us-remove-gym-btn:hover {
+    color: #ef4444;
+  }
+  
+  .us-trash-icon {
+    width: 18px;
+    height: 18px;
+  }
+  
+  /* Add Gym Section */
+  .us-add-gym-section {
+    margin-top: 1rem;
+  }
+  
+  .us-add-gym-title {
+    font-size: 0.875rem;
+    color: #475569;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+  
+  .us-gym-select-container {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .us-gym-select {
+    flex: 1;
+    padding: 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    background-color: #f8fafc;
+    color: #334155;
+  }
+  
+  .us-gym-select:focus {
+    outline: none;
+    border-color: #2196F3;
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
+  }
+  
+  .us-add-gym-btn {
+    background-color: #42a5f5;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  
+  .us-add-gym-btn:hover:not(:disabled) {
+    background-color: #1e88e5;
+  }
+  
+  .us-add-gym-btn:disabled {
+    background-color: #90caf9;
+    cursor: not-allowed;
+  }
+  
+  /* Form action buttons */
+  .us-form-actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 1.5rem;
+    border-top: 1px solid #e2e8f0;
+  }
+  
+  .us-action-buttons-left {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .us-action-buttons-right {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .us-delete-user-button {
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  
+  .us-delete-user-button:hover:not(:disabled) {
+    background-color: #dc2626;
+  }
+  
+  .us-deactivate-user-button {
+    background-color: #666666;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  
+  .us-deactivate-user-button:hover:not(:disabled) {
+    background-color: #4b4b4b;
+  }
+  
+  /* Added styles for activate button */
+  .us-deactivate-user-button.us-activate {
+    background-color: #32d296; /* Green color for activate */
+  }
+  
+  .us-deactivate-user-button.us-activate:hover:not(:disabled) {
+    background-color: #2dbd89; /* Darker green on hover */
+  }
+  
+  .us-deactivate-user-button:disabled,
+  .us-delete-user-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  .us-cancel-button {
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    color: #64748b;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+  }
+  
+  .us-cancel-button:hover:not(:disabled) {
+    background-color: #f1f5f9;
+    color: #334155;
+  }
+  
+  .us-confirm-button {
+    background-color: #42a5f5;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  
+  .us-confirm-button:hover:not(:disabled) {
+    background-color: #1e88e5;
+  }
+  
+  .us-confirm-button:disabled,
+  .us-cancel-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  /* Form message (error or success) */
+  .us-form-message {
+    margin: 0 1.5rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    text-align: center;
+  }
+  
+  .us-success {
+    background-color: #dcfce7;
+    color: #16a34a;
+  }
+  
+  .us-error {
+    background-color: #fee2e2;
+    color: #ef4444;
+  }
+  
+  /* Loading indicator */
+  .us-loading-indicator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-size: 1.25rem;
+    color: #64748b;
+  }
+  
+  /* Modal Styles */
+  .us-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .us-modal {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .us-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .us-modal-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: #334155;
+  }
+
+  .us-modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #64748b;
+    cursor: pointer;
+  }
+
+  .us-modal-close:hover {
+    color: #ef4444;
+  }
+
+  .us-modal-content {
+    padding: 1.5rem;
+  }
+
+  .us-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #e2e8f0;
+    gap: 1rem;
+  }
+
+  /* Change password button */
+  .us-change-password-button {
+    background-color: #666666;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 1rem 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: background-color 0.2s;
+  }
+
+  .us-change-password-button:hover {
+    background-color: #4b4b4b;
+  }
+
+  /* Mobile responsiveness */
+  @media (max-width: 768px) {
+    .us-form-layout {
+      flex-direction: column;
+    }
+    
+    .us-form-column {
+      min-width: 100%;
+    }
+    
+    .us-form-actions {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .us-action-buttons-left,
+    .us-action-buttons-right {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }

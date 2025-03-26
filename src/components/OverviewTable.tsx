@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import '../styles/OverviewTable.css';
 import { formatDistanceToNow } from 'date-fns';
+import { useNavigate } from 'react-router-dom';
 
 interface UserTableData {
   id_user: number;
@@ -17,6 +18,7 @@ interface UserTableData {
 }
 
 const UserOverviewTable: React.FC = () => {
+  const navigate = useNavigate();
   const [users, setUsers] = useState<UserTableData[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<UserTableData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -191,9 +193,16 @@ const UserOverviewTable: React.FC = () => {
             {currentUsers.map((user) => (
               <tr key={user.id_user}>
                 <td>
-                  <a href="#" className="user-link">
-                    {user.name}
-                  </a>
+                <a 
+                  href="#" 
+                  className="user-link"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate(`/admin-dashboard/users/${user.id_user}`);
+                  }}
+                >
+                  {user.name}
+                </a>
                 </td>
                 <td>
                   {user.linked_gyms.length > 0 ? (

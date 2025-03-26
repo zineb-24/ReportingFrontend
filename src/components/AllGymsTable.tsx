@@ -196,10 +196,18 @@ const AllGymsTable: React.FC = () => {
                     {gym.linked_users.length > 0 ? (
                       <div className="linked-users">
                         {gym.linked_users.map((user, index) => (
-                          <a href={`#/users/${user.id_user}`} key={user.id_user} className="user-link">
-                            {user.name}
-                            {index < gym.linked_users.length - 1 && <br />}
-                          </a>
+                          <a 
+                          key={user.id_user}
+                          href="#" 
+                          className="user-link"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            navigate(`/admin-dashboard/users/${user.id_user}`);
+                          }}
+                        >
+                          {user.name}
+                          {index < gym.linked_users.length - 1 && <br />}
+                        </a>
                         ))}
                       </div>
                     ) : (

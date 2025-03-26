@@ -10,7 +10,7 @@
   .overview-header {
     background-color: #42a5f5;
     color: white;
-    padding: 0.5rem 1.25rem;
+    padding: 0.25rem 1.25rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -224,6 +224,7 @@
     font-size: 0.875rem;
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
+    background-color: transparent;
   }
   
   .search-input:focus {

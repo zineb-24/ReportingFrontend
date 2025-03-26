@@ -326,7 +326,7 @@ const AddUserForm: React.FC = () => {
               </button>
               <button 
                 type="submit" 
-                className="add-user-button"
+                className="add-user-form-button"
                 disabled={loading}
               >
                 + Add User

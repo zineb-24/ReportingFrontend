@@ -15,7 +15,7 @@
   
   /* Form title bar - blue section with "Add New User" text */
   .form-title-bar {
-    background-color: #2196F3;
+    background-color: #42a5f5;
     color: white;
     padding: 0.75rem 1.25rem;
     margin-bottom: 0; /* Connect directly to form below */
@@ -182,11 +182,11 @@
   }
   
   /* Add User button */
-  .add-user-button {
+  .add-user-form-button {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background-color: #2196F3;
+    background-color: #42a5f5;
     color: white;
     border: none;
     border-radius: 6px;
