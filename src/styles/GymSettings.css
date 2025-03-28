@@ -1,0 +1,355 @@
+.gs-admin-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  /* Ensure the form container takes up the full width and height */
+  .gs-form-container {
+    padding: 1.5rem;
+    background-color: #f1f5f9;
+    margin-top: 65px; /* Match header height */
+    min-height: calc(100vh - 65px);
+  }
+  
+  /* Form title bar - blue section with "Gym Settings" text */
+  .gs-form-title-bar {
+    background-color: #42a5f5;
+    color: white;
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 0; /* Connect directly to form below */
+    border-radius: 8px 8px 0 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+  }
+  
+  .gs-form-title-bar h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+  }
+  
+  .gs-settings-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 0.5rem;
+  }
+  
+  /* Main form container */
+  .gs-gym-form-container {
+    background-color: white;
+    border-radius: 0 0 8px 8px; /* Only rounded at the bottom */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin: 0 auto;
+    max-width: 100%;
+  }
+  
+  /* Form layout - the two sections side by side */
+  .gs-form-layout {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 1.5rem;
+    gap: 2rem;
+  }
+  
+  /* Column container */
+  .gs-form-column {
+    flex: 1;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Section title - outside the dashed container */
+  .gs-section-title {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    color: #334155;
+    font-weight: 500;
+  }
+  
+  /* Individual form sections with dashed borders */
+  .gs-form-section {
+    flex: 1;
+    border: 1px dashed #e2e8f0;
+    border-radius: 8px;
+    padding: 1.5rem;
+  }
+  
+  /* Form input groups */
+  .gs-form-group {
+    margin-bottom: 1.25rem;
+    position: relative;
+  }
+  
+  /* Last form group shouldn't have a bottom margin */
+  .gs-form-group:last-child {
+    margin-bottom: 0;
+  }
+  
+  .gs-form-group label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: #334155;
+  }
+  
+  .gs-form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    background-color: #f8fafc;
+  }
+  
+  .gs-form-group input::placeholder {
+    color: #94a3b8;
+  }
+  
+  .gs-form-group input:focus {
+    outline: none;
+    border-color: #2196F3;
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
+  }
+  
+  .gs-form-group input.gs-error {
+    border-color: #ef4444;
+  }
+  
+  .gs-readonly-field {
+    background-color: #f1f5f9 !important;
+    color: #64748b;
+    cursor: not-allowed;
+  }
+  
+  .gs-error-message {
+    color: #ef4444;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+  }
+  
+  /* Linked Users Section */
+  .gs-linked-users {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .gs-linked-user-tag {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #e0f7f0;
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    color: #334155;
+  }
+  
+  .gs-no-users {
+    color: #94a3b8;
+    font-style: italic;
+    padding: 0.5rem 0;
+  }
+  
+  .gs-remove-user-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    color: #64748b;
+  }
+  
+  .gs-remove-user-btn:hover {
+    color: #ef4444;
+  }
+  
+  .gs-trash-icon {
+    width: 18px;
+    height: 18px;
+  }
+  
+  /* Add User Section */
+  .gs-add-user-section {
+    margin-top: 1rem;
+  }
+  
+  .gs-add-user-title {
+    font-size: 0.875rem;
+    color: #475569;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+  
+  .gs-user-select-container {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .gs-user-select {
+    flex: 1;
+    padding: 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    background-color: #f8fafc;
+    color: #334155;
+  }
+  
+  .gs-user-select:focus {
+    outline: none;
+    border-color: #2196F3;
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
+  }
+  
+  .gs-add-user-btn {
+    background-color: #42a5f5;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  
+  .gs-add-user-btn:hover:not(:disabled) {
+    background-color: #1e88e5;
+  }
+  
+  .gs-add-user-btn:disabled {
+    background-color: #90caf9;
+    cursor: not-allowed;
+  }
+  
+  /* Form action buttons */
+  .gs-form-actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 1.5rem;
+    border-top: 1px solid #e2e8f0;
+  }
+  
+  .gs-action-buttons-left {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .gs-action-buttons-right {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .gs-delete-gym-button {
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  
+  .gs-delete-gym-button:hover:not(:disabled) {
+    background-color: #dc2626;
+  }
+  
+  .gs-delete-gym-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  .gs-cancel-button {
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    color: #64748b;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+  }
+  
+  .gs-cancel-button:hover:not(:disabled) {
+    background-color: #f1f5f9;
+    color: #334155;
+  }
+  
+  .gs-confirm-button {
+    background-color: #42a5f5;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  
+  .gs-confirm-button:hover:not(:disabled) {
+    background-color: #1e88e5;
+  }
+  
+  .gs-confirm-button:disabled,
+  .gs-cancel-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  /* Form message (error or success) */
+  .gs-form-message {
+    margin: 0 1.5rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    text-align: center;
+  }
+  
+  .gs-success {
+    background-color: #dcfce7;
+    color: #16a34a;
+  }
+  
+  .gs-error {
+    background-color: #fee2e2;
+    color: #ef4444;
+  }
+  
+  /* Loading indicator */
+  .gs-loading-indicator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-size: 1.25rem;
+    color: #64748b;
+  }
+  
+  /* Mobile responsiveness */
+  @media (max-width: 768px) {
+    .gs-form-layout {
+      flex-direction: column;
+    }
+    
+    .gs-form-column {
+      min-width: 100%;
+    }
+    
+    .gs-form-actions {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .gs-action-buttons-left,
+    .gs-action-buttons-right {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }

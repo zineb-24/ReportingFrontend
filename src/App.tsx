@@ -8,6 +8,7 @@ import { isAuthenticated, isAdmin } from './services/api';
 import AddUserForm from './components/AddUserForm';
 import AddGymForm from './components/AddGymForm';
 import UserSettings from './components/UserSettings';
+import GymSettings from './components/GymSettings';
 
 // Root component to handle initial redirect
 const Root: React.FC = () => {
@@ -90,6 +91,12 @@ const App: React.FC = () => {
         <Route 
           path="/admin-dashboard/users/:userId" 
           element={<ProtectedRoute element={<UserSettings />} requireAdmin={true} />} 
+        />
+
+        {/* Gym Settings*/}
+        <Route 
+          path="/admin-dashboard/gyms/:gymId" 
+          element={<ProtectedRoute element={<GymSettings />} requireAdmin={true} />} 
         />
         
         {/* Redirect root to login */}

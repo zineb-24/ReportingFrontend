@@ -185,7 +185,14 @@ const AllLinksTable: React.FC = () => {
                   </a>
                   </td>
                   <td>
-                    <a href={`#/gyms/${link.id_salle.id_salle}`} className="gym-link">
+                    <a 
+                      href="#" 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigate(`/admin-dashboard/gyms/${link.id_salle.id_salle}`);
+                      }} 
+                      className="gym-link"
+                    >
                       {link.id_salle.name}
                     </a>
                   </td>

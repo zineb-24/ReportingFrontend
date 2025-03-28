@@ -188,7 +188,14 @@ const AllGymsTable: React.FC = () => {
               {currentGyms.map((gym) => (
                 <tr key={gym.id_salle}>
                   <td>
-                    <a href={`#/gyms/${gym.id_salle}`} className="gym-link">
+                    <a 
+                      href="#" 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigate(`/admin-dashboard/gyms/${gym.id_salle}`);
+                      }}
+                      className="gym-link"
+                    >
                       {gym.name}
                     </a>
                   </td>

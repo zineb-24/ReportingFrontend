@@ -208,7 +208,15 @@ const UserOverviewTable: React.FC = () => {
                   {user.linked_gyms.length > 0 ? (
                     <div className="linked-gyms">
                       {user.linked_gyms.map((gym, index) => (
-                        <a href="#" key={gym.id_salle} className="gym-link">
+                        <a 
+                          href="#" 
+                          key={gym.id_salle} 
+                          className="gym-link"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            navigate(`/admin-dashboard/gyms/${gym.id_salle}`);
+                          }}
+                        >
                           {gym.name}
                           {index < user.linked_gyms.length - 1 && <br />}
                         </a>
