@@ -1,0 +1,583 @@
+/* UserDashboard.css - with renamed classes */
+.customer-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  /* Header Styles */
+  .customer-header {
+    background-color: #2196F3;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1.5rem;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 65px;
+  }
+  
+  .customer-logo-container {
+    display: flex;
+    align-items: center;
+    margin-top: 25px;
+    margin-left: 10px;
+  }
+  
+  .customer-logo-image {
+    height: 45px;
+    width: auto;
+  }
+  
+  .customer-header-title {
+    font-size: 1.25rem;
+    font-weight: 400;
+    margin: 0;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+  }
+  
+  .customer-profile {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .customer-profile-circle {
+    background-color: white;
+    border-radius: 50%;
+    padding: 0.35rem;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.5rem;
+  }
+  
+  .customer-profile-icon {
+    color: #2196F3;
+    width: 24px;
+    height: 24px;
+  }
+  
+  .customer-chevron-icon {
+    width: 20px;
+    height: 20px;
+    color: white;
+  }
+  
+  /* Main Content Layout */
+  .customer-content {
+    display: flex;
+    flex: 1;
+    margin-top: 65px; /* Match header height */
+    height: calc(100vh - 65px);
+    position: relative; /* Add this for positioning the gym selector */
+  }
+  
+  /* Sidebar Styles */
+  .customer-sidebar {
+    width: 200px;
+    background-color: white;
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: fixed;
+    top: 65px; /* Position below header */
+    left: 0;
+    bottom: 0;
+    z-index: 10;
+    overflow-y: auto;
+  }
+  
+  .customer-sidebar-nav {
+    padding: 0.75rem 0;
+    flex-grow: 1;
+  }
+  
+  .customer-sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .customer-sidebar-nav li {
+    padding: 0;
+    margin: 0.5rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    position: relative;
+  }
+  
+  .customer-sidebar-nav li > div {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.85rem 1.5rem;
+    width: 90%;
+    border-radius: 8px;
+  }
+  
+  .customer-sidebar-nav li:hover > div {
+    background-color: #e8f3ff;
+    color: #2196F3;
+  }
+  
+  .customer-sidebar-nav li.active > div {
+    color: #2196F3;
+    background-color: #c9e6fd;
+    font-weight: 500;
+  }
+  
+  .customer-menu-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+  
+  .customer-sidebar-logout {
+    width: 90%;
+    margin: 1rem auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 1.75rem;
+    gap: 1rem;
+    background-color: #ffc9cf;
+    color: #ef4444;
+    border: none;
+    border-radius: 8px;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-bottom: 2rem;
+  }
+  
+  .customer-sidebar-logout:hover {
+    background-color: #ffafaf;
+  }
+  
+  .customer-logout-icon {
+    width: 20px;
+    height: 20px;
+  }
+  
+  /* Main Content Area */
+  .customer-gym-selector {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    padding: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    position: fixed; /* Fixed position to stay in place when scrolling */
+    top: 65px; /* Position right under the header */
+    left: 200px; /* Width of the sidebar */
+    right: 0;
+    z-index: 6;
+    margin: 0;
+    border-radius: 0;
+    height: 75px; /* Set a fixed height */
+  }
+  
+  /* Additional padding for the main content to account for the gym selector */
+  .customer-main-content {
+    flex: 1;
+    padding: 1.5rem 2.5rem;
+    background-color: #f4f4f4;
+    margin-left: 200px; /* Adjust for sidebar width */
+    margin-top: 80px; /* Add margin-top equal to gym selector height */
+    min-height: calc(100vh - 65px - 50px); /* Subtract header and gym selector height */
+    overflow-y: auto;
+    width: calc(100% - 200px); /* Ensure content width doesn't extend past right edge */
+    box-sizing: border-box;
+  }
+  
+  .customer-gym-tabs {
+    display: flex;
+    flex-grow: 1;
+    overflow-x: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    padding: 0;
+    justify-content: space-between; /* This distributes the tabs evenly */
+    width: 100%; /* Ensure it takes full width */
+  }
+  
+  .customer-gym-tabs::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+  
+  .customer-gym-tab {
+    padding: 0.75rem 1rem;
+    white-space: nowrap;
+    color: #64748b;
+    cursor: pointer;
+    transition: color 0.2s;
+    border-bottom: 2px solid transparent;
+    font-weight: 500;
+    flex: 1; /* Make each tab take equal space */
+    text-align: center; /* Center the text */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+  
+  .customer-gym-tab:hover {
+    color: #ec5555;
+  }
+  
+  .customer-gym-tab.active {
+    color: #ec5555;
+    border-bottom: 2px solid #ec5555;
+  }
+  
+  .customer-nav-arrow {
+    background: none;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+    z-index: 6; /* Ensure they're above other elements */
+    flex-shrink: 0;
+  }
+  
+  .customer-nav-arrow:hover {
+    background-color: #f0f7ff;
+    color: #2196F3;
+  }
+  
+  .customer-nav-arrow svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  /* Welcome Section and Date Selector */
+  .customer-welcome-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding: 0 0.5rem;
+  }
+  
+  .customer-welcome-section h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #334155;
+    margin: 0;
+  }
+  
+  .customer-date-selector {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .customer-date-input-container, .customer-date-range-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .customer-date-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .customer-date-input {
+    padding: 0.5rem 0.75rem;
+    padding-right: 2.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    background-color: white;
+  }
+  
+  .customer-date-icon {
+    position: absolute;
+    right: 0.75rem;
+    width: 18px;
+    height: 18px;
+    color: #64748b;
+    pointer-events: none;
+  }
+  
+  .customer-date-separator {
+    color: #64748b;
+    font-weight: 500;
+  }
+  
+  .customer-date-toggle-button {
+    background-color: #e8f3ff;
+    color: #2196F3;
+    border: 1px solid #c9e6fd;
+    border-radius: 6px;
+    padding: 0.5rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .customer-date-toggle-button:hover {
+    background-color: #d1e9ff;
+  }
+  
+  /* Stats Carousel Styles */
+  .customer-stats-carousel {
+    margin-bottom: 2rem;
+  }
+  
+  .customer-stats-container {
+    position: relative;
+  }
+  
+  .customer-stats-scroll-area {
+    display: flex;
+    gap: 1.5rem;
+    padding: 0.5rem 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scroll-behavior: smooth;
+  }
+  
+  .customer-stats-scroll-area::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .customer-stat-card {
+    background-color: white;
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+    min-width: 220px;
+    flex-shrink: 0;
+    border-left: 3.5px solid rgba(59, 162, 234, 0.8);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .customer-stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  .customer-stat-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .customer-stat-info {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .customer-stat-title {
+    font-size: 1rem;
+    color: #64748b;
+    margin: 0 0 0.5rem;
+    font-weight: 500;
+  }
+  
+  .customer-stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+  }
+  
+  /* Stats Icons */
+  .customer-stat-icon {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .customer-stat-icon-svg {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .customer-payment-icon {
+    background-color: #e6f9ff;
+  }
+  
+  .customer-payment-icon .customer-stat-icon-svg {
+    color: #0ea5e9;
+  }
+  
+  .customer-client-icon {
+    background-color: #e9f9f0;
+  }
+  
+  .customer-client-icon .customer-stat-icon-svg {
+    color: #10b981;
+  }
+  
+  .customer-subscription-icon {
+    background-color: #f3e8ff;
+  }
+  
+  .customer-subscription-icon .customer-stat-icon-svg {
+    color: #8b5cf6;
+  }
+  
+  .customer-expired-icon {
+    background-color: #ffeae8;
+  }
+  
+  .customer-expired-icon .customer-stat-icon-svg {
+    color: #ef4444;
+  }
+  
+  .customer-active-icon {
+    background-color: #ecfdf5;
+  }
+  
+  .customer-active-icon .customer-stat-icon-svg {
+    color: #10b981;
+  }
+  
+  /* Stats Navigation Arrows */
+  .customer-stats-nav-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s, color 0.2s;
+  }
+  
+  .customer-stats-nav-arrow:hover {
+    background-color: #f0f7ff;
+    color: #2196F3;
+  }
+  
+  .customer-stats-nav-arrow svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .customer-stats-prev {
+    left: -12px;
+  }
+  
+  .customer-stats-next {
+    right: -12px;
+  }
+  
+  /* Dashboard Content Area for Future Components */
+  .customer-dashboard-content {
+    background-color: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    min-height: 300px;
+  }
+  
+  .customer-select-gym-message, .customer-loading-data {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    color: #64748b;
+    font-style: italic;
+  }
+  
+  /* Tab Content */
+  .customer-tab-content {
+    background-color: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Mobile Responsiveness */
+  @media (max-width: 768px) {
+    .customer-sidebar {
+      position: static;
+      width: 100%;
+      height: auto;
+    }
+    
+    .customer-nav-arrow {
+      display: none;
+    }
+    
+    .customer-gym-tabs.scrollable + .customer-nav-arrow {
+      display: flex;
+    }
+
+    .customer-main-content {
+      margin-left: 0;
+    }
+    
+    .customer-content {
+      flex-direction: column;
+    }
+    
+    .customer-welcome-section {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    
+    .customer-date-selector {
+      width: 100%;
+    }
+    
+    .customer-date-range-container {
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+    }
+    
+    .customer-date-input-wrapper {
+      width: 100%;
+    }
+    
+    .customer-date-input {
+      width: 100%;
+    }
+  }

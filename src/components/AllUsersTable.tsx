@@ -149,7 +149,7 @@ const AllUsersTable: React.FC = () => {
         </div>
 
         <div className="table-responsive">
-          <table className="users-table">
+          <table className="all-users-table">
             <thead>
               <tr>
                 <th>Users</th>

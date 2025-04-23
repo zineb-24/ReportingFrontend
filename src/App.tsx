@@ -48,8 +48,25 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         
+        {/* Main user dashboard */}
         <Route 
           path="/user-dashboard" 
+          element={<ProtectedRoute element={<UserDashboard />} />} 
+        />
+        
+        {/* User dashboard tabs as separate routes */}
+        <Route 
+          path="/user-dashboard/users" 
+          element={<ProtectedRoute element={<UserDashboard />} />} 
+        />
+        
+        <Route 
+          path="/user-dashboard/links" 
+          element={<ProtectedRoute element={<UserDashboard />} />} 
+        />
+        
+        <Route 
+          path="/user-dashboard/reports" 
           element={<ProtectedRoute element={<UserDashboard />} />} 
         />
         

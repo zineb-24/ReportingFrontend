@@ -21,7 +21,7 @@
   .all-links-table-container {
     background-color: white;
     border-radius: 10px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
     overflow: hidden;
     width: 100%;
   }
@@ -120,7 +120,7 @@
   }
   
   .links-table th {
-    background-color: #e6f2ff;
+    background-color: #c9e6fd;
     color: #64748b;
     font-weight: 600;
     text-align: left;

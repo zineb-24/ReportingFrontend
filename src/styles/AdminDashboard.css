@@ -86,7 +86,7 @@
   .admin-sidebar {
     width: 200px; /* make sidebar narrower or wider */
     background-color: white;
-    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -134,13 +134,13 @@
   }
   
   .sidebar-nav li:hover > div {
-    background-color: #f0f7ff;
+    background-color: #e8f3ff;
     color: #2196F3;
   }
   
   .sidebar-nav li.active > div {
     color: #2196F3;
-    background-color: #e0f7ff;
+    background-color: #c9e6fd;
     font-weight: 500;
   }
   
@@ -163,7 +163,7 @@
     justify-content: flex-start; /* Keep left alignment */
     padding-left: 1.75rem; /* Increase left padding to move content to the right */
     gap: 1rem;
-    background-color: #fee2e2;
+    background-color: #ffc9cf;
     color: #ef4444;
     border: none;
     border-radius: 8px;
@@ -177,7 +177,7 @@
   }
   
   .sidebar-logout:hover {
-    background-color: #fecaca;
+    background-color: #ffbcbc;
   }
   
   .logout-icon {
@@ -189,7 +189,7 @@
   .main-content {
     flex: 1;
     padding: 1.5rem 2.5rem;
-    background-color: #f1f5f9;
+    background-color: #f4f4f4;
     margin-left: 200px; /* Main content adjustement to the right */
     min-height: calc(100vh - 65px);
     overflow-y: auto;
@@ -223,7 +223,7 @@
     background-color: white;
     border-radius: 10px;
     padding: 1rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
     border-left: 3.5px solid rgba(59, 162, 234, 0.8); 
   }
 
@@ -270,15 +270,15 @@
 
 
   .user-icon {
-    background-color: #e0f7fa;
+    background-color: #d6f9fd;
   }
 
   .gym-icon {
-    background-color: #ffebee;
+    background-color: #ffdfe3;
   }
 
   .admin-icon {
-    background-color: #e3f2fd;
+    background-color: #ceeafd;
   }
 
   /* Icon-specific size adjustments */
