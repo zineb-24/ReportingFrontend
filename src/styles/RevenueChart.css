@@ -1,0 +1,47 @@
+/* src/styles/RevenueChart.css */
+.revenue-chart-container {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #334155;
+    margin: 0 0 1.5rem 0;
+  }
+  
+  .chart-container {
+    height: 300px;
+  }
+  
+  .chart-loading,
+  .chart-empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 250px;
+    color: #64748b;
+  }
+  
+  .chart-tooltip {
+    background-color: rgba(0, 0, 0, 0.75);
+    border-radius: 4px;
+    padding: 0.75rem;
+    color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  .chart-tooltip-label {
+    margin: 0 0 0.25rem 0;
+    font-weight: 500;
+  }
+  
+  .chart-tooltip-value {
+    margin: 0;
+    font-weight: 600;
+    color: #63B3ED;
+  }
