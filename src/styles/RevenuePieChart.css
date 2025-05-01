@@ -1,0 +1,267 @@
+/* src/styles/RevenueDistribution.css */
+
+.custom-tooltip {
+    background-color: rgba(0, 0, 0, 0.75);
+    border-radius: 4px;
+    padding: 0.75rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    min-width: 180px;
+    max-width: 280px;
+  }
+  
+  .tooltip-name {
+    margin: 0 0 0.25rem 0;
+    font-weight: 500;
+    color: white;
+  }
+  
+  .tooltip-value {
+    margin: 0 0 0.5rem 0;
+    font-weight: 600;
+    color: #63B3ED;
+  }
+
+  .tooltip-details {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px dashed #e2e8f0;
+  }
+  
+  .details-header {
+    margin: 0 0 0.25rem 0;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #e8eaee;
+  }
+  
+  .details-list {
+    margin: 0;
+    padding: 0 0 0 0.5rem;
+    list-style: none;
+  }
+  
+  .details-list li {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
+    font-size: 0.85rem;
+  }
+  
+  .detail-name {
+    color: #e8eaee;
+  }
+  
+  .detail-value {
+    font-weight: 500;
+    color: #63B3ED;
+  }
+
+/* Fix header alignment */
+.amount-header, .percent-header {
+    text-align: right;
+  }
+  
+  /* Others details styling */
+  .others-details-container {
+    padding: 0 !important;
+  }
+  
+  .others-details {
+    background-color: #f6f6f6;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin: 0.5rem 0;
+  }
+  
+  .others-details h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.9rem;
+    color: #64748b;
+    font-weight: 500;
+  }
+  
+  .others-details-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+  
+  .others-details-table td {
+    padding: 0.4rem 0.5rem;
+    border-bottom: 1px dashed #e2e8f0;
+  }
+  
+  .others-details-table tr:last-child td {
+    border-bottom: none;
+  }
+
+ .distribution-container {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .distribution-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+  }
+  
+  .distribution-header h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #334155;
+    margin: 0;
+    white-space: nowrap;
+  }
+  
+  .category-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .category-buttons button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    color: #64748b;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .category-buttons button.active {
+    background-color: #e8f3ff;
+    color: #2196F3;
+    border: 1px solid #c9e6fd;
+  }
+  
+  .category-buttons button:hover:not(.active) {
+    background-color: #f1f5f9;
+    color: #334155;
+  }
+  
+  .button-icon {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .distribution-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2rem;
+  }
+  
+  .distribution-chart {
+    flex: 1;
+    min-width: 300px;
+    height: 300px;
+  }
+  
+  .distribution-table {
+    flex: 1;
+    overflow-x: auto;
+  }
+  
+  .distribution-table table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .distribution-table th {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    color: #64748b;
+    font-weight: 500;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  /* Specifically align the amount and percentage headers */
+ .distribution-table th:nth-child(2) {
+    text-align: right; /* Align "Total Earnings" header to the right */
+  }
+  
+  .distribution-table th:nth-child(3) {
+    text-align: right; /* Align "%" header to the right */
+  }
+
+  .amount-cell, .percent-cell {
+    text-align: right;
+    font-weight: 500;
+  }
+  
+  .distribution-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e2e8f0;
+    color: #334155;
+  }
+  
+  .distribution-table tfoot td {
+    font-weight: 600;
+    border-top: 2px solid #e2e8f0;
+    border-bottom: none;
+  }
+  
+  .method-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .color-indicator {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+  }
+  
+  .amount-cell {
+    text-align: right;
+    font-weight: 500;
+  }
+  
+  .percent-cell {
+    text-align: right;
+    font-weight: 500;
+  }
+  
+  .distribution-loading,
+  .distribution-empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+    width: 100%;
+    color: #64748b;
+  }
+  
+  @media (max-width: 992px) {
+    .distribution-content {
+      flex-direction: column;
+    }
+    
+    .distribution-table {
+      width: 100%;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .distribution-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .category-buttons {
+      width: 100%;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+    }
+  }

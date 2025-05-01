@@ -4,6 +4,7 @@ import api, { logout, isAdmin } from '../services/api';
 import '../styles/UserDashboard.css';
 import UserHeader from '../components/UserHeader';
 import RevenueChart from '../components/RevenueChart';
+import RevenueDistribution from '../components/RevenuePieChart';
 
 interface UserStats {
   total_amount: number;
@@ -32,6 +33,7 @@ interface DateRange {
 }
 
 const UserDashboard: React.FC = () => {
+  const [showRangeLimitMessage, setShowRangeLimitMessage] = useState(false);
   const [revenueData, setRevenueData] = useState<Array<{date: string, amount: number, label: string}>>([]);
   const [isRevenueLoading, setIsRevenueLoading] = useState(false);
   const gymTabsRef = useRef<HTMLDivElement>(null);
@@ -203,9 +205,10 @@ const UserDashboard: React.FC = () => {
             const daysDiff = Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
             
             if (daysDiff > 30) {
-              // You can show a notification to the user here
-              console.log('Selected range exceeds 30 days. Only showing the first 30 days.');
-              // Optional: You could use a toast notification library or add a small message
+              // Show a notification to the user if the time period exceeds 30 days
+              setShowRangeLimitMessage(true);
+              } else {
+                setShowRangeLimitMessage(false);
             }
             
             dateParam = `${dateRange.startDate} to ${dateRange.endDate}`;
@@ -433,7 +436,7 @@ const UserDashboard: React.FC = () => {
               {/* Welcome message */}
               <div className="customer-welcome-section">
                 <h2><span className="customer-welcome-text">Welcome, </span>{user?.name || 'user'}</h2>
-                
+                {/* Date Selector */}
                 <div className="customer-date-selector">
                   {dateMode === 'date' ? (
                     <div className="customer-date-input-container">
@@ -491,7 +494,6 @@ const UserDashboard: React.FC = () => {
                 </div>
               </div>
   
-
                   {/* Stats Cards */}
                   <div className="customer-stats-carousel">
                     <div className="customer-stats-container">
@@ -625,7 +627,27 @@ const UserDashboard: React.FC = () => {
 
                   {/* Dashboard content area */}
                   <div className="customer-dashboard-content">
-                    {/* Chart or table components will go here */}
+                    {/* Chart and table components */}
+
+                    {selectedSalle && (
+                      <RevenueDistribution
+                        salleId={selectedSalle.id_salle}
+                        dateMode={dateMode}
+                        startDate={dateRange.startDate}
+                        endDate={dateRange.endDate}
+                      />
+                    )}
+                  
+                    {/* Message if the time period selected exceeds 30 days */}
+                    {showRangeLimitMessage && dateMode === 'period' && (
+                      <div className="customer-range-limit-message">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="info-icon">
+                          <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z" clipRule="evenodd" />
+                        </svg>
+                        <p>Your selected range exceeds 30 days. Only showing the first 30 days of data.</p>
+                      </div>
+                    )}
+
                     {selectedSalle && (
                       <RevenueChart
                         data={revenueData}

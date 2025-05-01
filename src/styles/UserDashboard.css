@@ -471,11 +471,11 @@
 }
 
 .customer-payment-icon {
-  background-color: #e6f9ff;
+  background-color: #ffeae8;
 }
 
 .customer-payment-icon .customer-stat-icon-svg {
-  color: #0ea5e9;
+  color: #f15353;
 }
 
 .customer-client-icon {
@@ -572,6 +572,31 @@
   border-radius: 10px;
   padding: 1.5rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Message for exceeded time period */
+.customer-range-limit-message {
+  display: flex;
+  align-items: center;
+  background-color: #e0f2ff;
+  border-left: 3px solid #2196F3;
+  padding: 0.75rem 1rem;
+  margin: 0.5rem 0 1.5rem;
+  border-radius: 4px;
+}
+
+.customer-range-limit-message .info-icon {
+  width: 20px;
+  height: 20px;
+  color: #2196F3;
+  margin-right: 0.75rem;
+  flex-shrink: 0;
+}
+
+.customer-range-limit-message p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #334155;
 }
 
 /* Mobile Responsiveness */

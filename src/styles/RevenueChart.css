@@ -1,4 +1,9 @@
 /* src/styles/RevenueChart.css */
+
+.recharts-rectangle.recharts-tooltip-cursor {
+  fill: rgba(99, 179, 237, 0.3) !important; /* Light blue background */
+}
+
 .revenue-chart-container {
     background-color: white;
     border-radius: 10px;
@@ -7,12 +12,13 @@
     margin-bottom: 2rem;
   }
   
-  .section-title {
+ .revenue-title {
     font-size: 1.25rem;
     font-weight: 600;
     color: #334155;
     margin: 0 0 1.5rem 0;
   }
+  
   
   .chart-container {
     height: 300px;
