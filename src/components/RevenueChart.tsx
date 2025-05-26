@@ -103,9 +103,16 @@ const RevenueChart: React.FC<RevenueChartProps> = ({ data, selectedDate, dateMod
 
   // Calculate custom ticks for X axis
   const calculateTicks = () => {
+    // For yearly data (12 months), show all month labels
+    if (data.length === 12) {
+      return data.map(item => item.label);
+    }
+    
+    // For data with 8 or fewer points, show all labels
     if (data.length <= 8) {
       return data.map(item => item.label);
     } else {
+      // For more than 8 points (like daily data), limit to 8 evenly spaced ticks
       const tickIndices = [];
       // Always include first and last dates
       tickIndices.push(0);

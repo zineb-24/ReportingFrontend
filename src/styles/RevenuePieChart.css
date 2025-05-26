@@ -162,8 +162,8 @@
   
   .distribution-chart {
     flex: 1;
-    min-width: 300px;
-    height: 300px;
+    min-width: 450px;
+    height: 450px;
   }
   
   .distribution-table {

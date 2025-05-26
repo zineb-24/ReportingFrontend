@@ -65,6 +65,7 @@ const App: React.FC = () => {
           element={<ProtectedRoute element={<UserDashboard />} />} 
         />
         
+        {/* Reports route - renders UserDashboard with reports tab active */}
         <Route 
           path="/user-dashboard/reports" 
           element={<ProtectedRoute element={<UserDashboard />} />} 

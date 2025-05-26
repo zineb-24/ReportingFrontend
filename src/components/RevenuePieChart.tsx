@@ -21,14 +21,20 @@ interface RevenueDistributionProps {
 // #6bb7f6 light blue
 // #d2a7ff light purple
 // #F15353 red
+// #e92e2e darker red
+// #10b981
+// #e9f9f0
+// #0b87ec Original blue
 
 const COLORS = [
     '#6bb7f6',  // Lighter blue
-    '#2196F3',  // Original blue
+    '#0b87ec',  // Original blue
     '#d2a7ff',  // Lighter purple
     '#8B5CF6',  // Purple
     '#F87171',  // Lighter red
-    '#F15353'   // Red
+    '#e92e2e',  // Red
+    '#e9f9f0',  // Lighter green
+    '#10b981'   // green
   ];
 
 const RevenueDistribution: React.FC<RevenueDistributionProps> = ({ 
@@ -40,24 +46,26 @@ const RevenueDistribution: React.FC<RevenueDistributionProps> = ({
   const [distributionData, setDistributionData] = useState<DistributionDataPoint[]>([]);
   const [distributionTotal, setDistributionTotal] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [category, setCategory] = useState<'payment_method' | 'subscription' | 'agent'>('payment_method');
+  const [category, setCategory] = useState<'payment_method' | 'subscription' | 'agent'>('subscription');
 
   //Custom Tooltip
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length > 0) {
       const data = payload[0].payload;
       
-      // Check if this is the "Others" segment and if it has details
-      const isOthers = data.name === 'Others' && data.details;
+      // Check if this has details (for subscription categories, Others, etc.)
+      const hasDetails = data.details && data.details.length > 0;
       
       return (
         <div className="custom-tooltip">
           <p className="tooltip-name">{data.name}</p>
           <p className="tooltip-value">{formatNumber(data.value)} MAD</p>
           
-          {isOthers && data.details && (
+          {hasDetails && (
             <div className="tooltip-details">
-              <p className="details-header">Details:</p>
+              <p className="details-header">
+                {category === 'subscription' ? 'Categories:' : 'Details:'}
+              </p>
               <ul className="details-list">
                 {data.details.map((item: any, index: number) => (
                   <li key={index}>
@@ -146,16 +154,6 @@ const RevenueDistribution: React.FC<RevenueDistributionProps> = ({
         <h3>Revenue By</h3>
         <div className="category-buttons">
           <button 
-            className={category === 'payment_method' ? 'active' : ''} 
-            onClick={() => handleCategoryChange('payment_method')}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="button-icon">
-              <path d="M4.5 3.75a3 3 0 00-3 3v.75h21v-.75a3 3 0 00-3-3h-15z" />
-              <path fillRule="evenodd" d="M22.5 9.75h-21v7.5a3 3 0 003 3h15a3 3 0 003-3v-7.5zm-18 3.75a.75.75 0 01.75-.75h6a.75.75 0 010 1.5h-6a.75.75 0 01-.75-.75zm.75 2.25a.75.75 0 000 1.5h3a.75.75 0 000-1.5h-3z" clipRule="evenodd" />
-            </svg>
-            Payment Method
-          </button>
-          <button 
             className={category === 'subscription' ? 'active' : ''} 
             onClick={() => handleCategoryChange('subscription')}
           >
@@ -164,6 +162,16 @@ const RevenueDistribution: React.FC<RevenueDistributionProps> = ({
               <path fillRule="evenodd" d="M3 9.375C3 8.339 3.84 7.5 4.875 7.5h9.75c1.036 0 1.875.84 1.875 1.875v11.25c0 1.035-.84 1.875-1.875 1.875h-9.75A1.875 1.875 0 013 20.625V9.375zM6 12a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75H6.75a.75.75 0 01-.75-.75V12zm2.25 0a.75.75 0 01.75-.75h3.75a.75.75 0 010 1.5H9a.75.75 0 01-.75-.75z" clipRule="evenodd" />
             </svg>
             Subscription Category
+          </button>
+          <button 
+            className={category === 'payment_method' ? 'active' : ''} 
+            onClick={() => handleCategoryChange('payment_method')}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="button-icon">
+              <path d="M4.5 3.75a3 3 0 00-3 3v.75h21v-.75a3 3 0 00-3-3h-15z" />
+              <path fillRule="evenodd" d="M22.5 9.75h-21v7.5a3 3 0 003 3h15a3 3 0 003-3v-7.5zm-18 3.75a.75.75 0 01.75-.75h6a.75.75 0 010 1.5h-6a.75.75 0 01-.75-.75zm.75 2.25a.75.75 0 000 1.5h3a.75.75 0 000-1.5h-3z" clipRule="evenodd" />
+            </svg>
+            Payment Method
           </button>
           <button 
             className={category === 'agent' ? 'active' : ''} 
@@ -189,14 +197,14 @@ const RevenueDistribution: React.FC<RevenueDistributionProps> = ({
         ) : (
           <>
             <div className="distribution-chart">
-              <ResponsiveContainer width="100%" height={300}>
+              <ResponsiveContainer width="100%" height={450}>
                 <PieChart>
                   <Pie
                     data={distributionData}
                     cx="50%"
                     cy="50%"
                     innerRadius={0}
-                    outerRadius={150}
+                    outerRadius={180}
                     fill="#8884d8"
                     paddingAngle={0}
                     dataKey="value"
@@ -237,12 +245,15 @@ const RevenueDistribution: React.FC<RevenueDistributionProps> = ({
                         <td className="percent-cell">{calculatePercentage(item.value)}</td>
                     </tr>
                     
-                    {/* Add nested rows for "Others" details */}
-                    {item.name === 'Others' && item.details && (
+                    {/* Add nested rows for subscription details (FAMILLE) or "Others" details */}
+                    {((category === 'subscription' && item.details && item.details.length > 0) || 
+                      (item.name === 'Others' && item.details && item.details.length > 0)) && (
                         <tr>
                         <td colSpan={3} className="others-details-container">
                             <div className="others-details">
-                            <h4>Details:</h4>
+                            <h4>
+                              {category === 'subscription' ? 'Categories:' : 'Details:'}
+                            </h4>
                             <table className="others-details-table">
                                 <tbody>
                                 {item.details.map((detail: any, detailIndex: number) => (

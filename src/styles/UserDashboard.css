@@ -160,7 +160,7 @@
   padding-left: 1.75rem;
   gap: 1rem;
   background-color: #ffc9cf;
-  color: #ef4444;
+  color: #f52020;
   border: none;
   border-radius: 8px;
   padding-top: 0.75rem;
@@ -186,16 +186,16 @@
   display: flex;
   align-items: center;
   background-color: white;
-  padding: 0.5rem;
+  padding: 0.5rem 1rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  position: fixed; /* Fixed position to stay in place when scrolling */
-  top: 65px; /* Position right under the header */
-  left: 200px; /* Width of the sidebar */
+  position: fixed;
+  top: 65px;
+  left: 200px;
   right: 0;
   z-index: 6;
   margin: 0;
   border-radius: 0;
-  height: 50px; /* Set a fixed height */
+  height: 50px;
 }
 
 .customer-welcome-text {
@@ -219,11 +219,12 @@
   display: flex;
   flex-grow: 1;
   overflow-x: auto;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   padding: 0;
-  justify-content: space-between; /* This distributes the tabs evenly */
-  width: 100%; /* Ensure it takes full width */
+  justify-content: center; /* Center the tabs */
+  width: 100%;
+  gap: 10px; /* Space between tabs */
 }
 
 .customer-gym-tabs::-webkit-scrollbar {
@@ -231,7 +232,7 @@
 }
 
 .customer-gym-tab {
-  padding: 0.75rem 1rem;
+  padding: 0.25rem 1rem;
   margin-bottom: 0px; /* This is the key change - pull tab down to overlap container border */
   white-space: nowrap;
   color: #64748b;
@@ -245,15 +246,20 @@
   justify-content: center;
   align-items: center;
   position: relative;
+  border-radius: 8px; /* Add rounded corners */
+  margin: 0 150px; /* Add some space between tabs */
 }
 
 .customer-gym-tab:hover {
   color: #ec5555;
+  background-color: rgba(236, 85, 85, 0.1); /* Light red background on hover */
 }
-
+/*#ffafaf
+#f26666*/
 .customer-gym-tab.active {
-  color: #ec5555;
-  border-bottom: 2px solid #ec5555;
+  color: #f52020; /* White text */
+  background-color: #ffc9cf; /* Pink/red background */
+  border-bottom: none; /* Remove the bottom border */
 }
 
 .customer-nav-arrow {
@@ -306,6 +312,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  flex-wrap: wrap; /*update*/
 }
 
 .customer-date-input-container, .customer-date-range-container {
@@ -335,7 +342,7 @@
   opacity: 1;
   cursor: pointer;
   position: absolute;
-  right: 10px;
+  right: 20px;
 }
 
 /* Date range specific styling */
@@ -599,6 +606,116 @@
   color: #334155;
 }
 
+/* Date Dropdown Styles */
+.customer-date-dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+.customer-date-filter-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #e8f3ff;
+  color: #2196F3;
+  border: 1px solid #c9e6fd;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.customer-date-filter-button:hover {
+  background-color: #d1e9ff;
+}
+
+.dropdown-arrow {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s;
+}
+
+.customer-date-filter-button[aria-expanded="true"] .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+.customer-date-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 10;
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  min-width: 120px;
+  margin-top: 4px;
+}
+
+.dropdown-option {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  color: #64748b;
+  font-weight: 500;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.dropdown-option:hover {
+  background-color: #f1f5f9;
+  color: #334155;
+}
+
+.dropdown-option.active {
+  background-color: #e8f3ff;
+  color: #2196F3;
+}
+
+.dropdown-option:first-child {
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+
+.dropdown-option:last-child {
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+
+/* Month/Year Selector Styles */
+.customer-month-year-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.customer-month-select,
+.customer-year-input {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  background-color: white;
+}
+
+.customer-month-select {
+  min-width: 120px;
+}
+
+.customer-year-input {
+  width: 80px;
+  text-align: center;
+}
+
+.customer-year-container {
+  display: flex;
+  align-items: center;
+}
+
+.customer-year-container .customer-year-input {
+  width: 100px;
+}
+
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
   .customer-sidebar {
@@ -645,5 +762,21 @@
   
   .customer-date-input {
     width: 100%;
+  }
+
+    .customer-date-selector {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+  
+  .customer-month-year-container,
+  .customer-date-range-container {
+    width: 100%;
+  }
+  
+  .customer-month-select {
+    flex: 1;
+    min-width: 0;
   }
 }
