@@ -96,7 +96,7 @@
   left: 0;
   bottom: 0;
   z-index: 10;
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 .customer-sidebar-nav {
@@ -716,6 +716,186 @@
   width: 100px;
 }
 
+/* Go to Reports Button */
+.customer-go-to-reports-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #e8f3ff;
+  color: #2196F3;
+  border: 1px solid #c9e6fd;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  height: 38px; /* Match the height of date inputs */
+  white-space: nowrap;
+  font-size: 0.875rem;
+  font-weight: 450;
+}
+
+.customer-go-to-reports-button:hover {
+  background-color: #d1e9ff;
+  color: #1976d2;
+}
+
+.customer-reports-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.customer-reports-button-text {
+  color: inherit;
+}
+
+/* Sidebar Toggle Button - Centered */
+.customer-sidebar-toggle {
+  position: absolute;
+  right: 0px;
+  top: 50%;  /* Changed from 20px to 50% */
+  transform: translateY(-50%);  /* Added to center vertically */
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: none;
+  border: none;
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 11;
+  transition: all 0.3s ease;
+}
+
+.customer-sidebar-toggle:hover {
+  background-color: rgba(240, 247, 255, 0.8);
+  border-radius: 20px;
+  transform: translateY(-50%) scale(1.05);  /* Updated hover transform */
+}
+
+.customer-sidebar-toggle:hover .toggle-icon {
+  color: #2196F3;  /* Change color on hover */
+}
+
+.toggle-icon {
+  width: 16px;
+  height: 16px;
+  color: #64748b;
+  transition: transform 0.3s ease;
+}
+
+.toggle-icon.collapsed {
+  transform: rotate(180deg);
+}
+
+/* Sidebar Collapsed State */
+.customer-sidebar {
+  transition: width 0.3s ease;
+}
+
+.customer-sidebar.collapsed {
+  width: 70px;
+}
+
+.customer-sidebar.collapsed .menu-text {
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+  transition: opacity 0.2s ease;
+}
+
+.customer-sidebar.collapsed .customer-sidebar-nav li > div {
+  justify-content: center;
+  padding: 0.85rem 0;
+}
+
+.customer-sidebar.collapsed .customer-sidebar-logout {
+  justify-content: center;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.customer-sidebar.collapsed .customer-sidebar-logout .menu-text {
+  display: none;
+}
+
+/* Adjust main content when sidebar is collapsed */
+.customer-gym-selector.sidebar-collapsed {
+  left: 70px;
+  width: calc(100% - 70px);
+}
+
+.customer-main-content.sidebar-collapsed {
+  margin-left: 70px;
+  width: calc(100% - 70px);
+}
+
+/* Tooltip on hover for collapsed sidebar */
+.customer-sidebar.collapsed .customer-sidebar-nav li {
+  position: relative;
+}
+
+.customer-sidebar.collapsed .customer-sidebar-nav li:hover::after {
+  content: attr(title);
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 10px;
+  padding: 4px 8px;
+  background-color: #334155;
+  color: white;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  white-space: nowrap;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.customer-sidebar.collapsed .customer-sidebar-nav li:hover::before {
+  content: "";
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 5px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 5px 5px 5px 0;
+  border-color: transparent #334155 transparent transparent;
+  pointer-events: none;
+}
+
+/* Smooth transitions */
+.menu-text {
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .customer-sidebar-toggle {
+    display: none;
+  }
+  
+  .customer-sidebar {
+    width: 100% !important;
+  }
+  
+  .customer-sidebar.collapsed {
+    width: 100% !important;
+  }
+  
+  .customer-sidebar.collapsed .menu-text {
+    opacity: 1;
+    visibility: visible;
+    position: static;
+  }
+}
+
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
   .customer-sidebar {
@@ -778,5 +958,14 @@
   .customer-month-select {
     flex: 1;
     min-width: 0;
+  }
+
+   .customer-reports-button-text {
+    display: none;
+  }
+  
+  .customer-go-to-reports-button {
+    min-width: 40px;
+    padding: 0.5rem;
   }
 }

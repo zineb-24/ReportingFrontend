@@ -33,25 +33,34 @@ interface DateRange {
   endDate: string | null;
 }
 
-type DateFilterType = 'date' | 'period' | 'month' | 'year';
+type DateFilterType = 'date' | 'period' | 'month' | 'year' | 'day' | 'custom';
 
 interface ReportsTableProps {
   selectedSalle: Salle | null;
+  initialDateFilterType?: DateFilterType;
+  initialDateRange?: DateRange;
+  initialSelectedMonth?: string;
+  initialSelectedYear?: string;
 }
 
-const ReportsTable: React.FC<ReportsTableProps> = ({ selectedSalle }) => {
+const ReportsTable: React.FC<ReportsTableProps> = ({ 
+  selectedSalle,
+  initialDateFilterType = 'date',
+  initialDateRange,
+  initialSelectedMonth,
+  initialSelectedYear
+}) => {
   const [reglements, setReglements] = useState<ReglementData[]>([]);
   const [filteredReglements, setFilteredReglements] = useState<ReglementData[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-  const [dateFilterType, setDateFilterType] = useState<DateFilterType>('date');
-  const [dateRange, setDateRange] = useState<DateRange>({
-    startDate: null,
-    endDate: null,
-  });
-  const [selectedMonth, setSelectedMonth] = useState<string>('');
-  const [selectedYear, setSelectedYear] = useState<string>('');
+  const [dateFilterType, setDateFilterType] = useState<DateFilterType>(initialDateFilterType);
+  const [dateRange, setDateRange] = useState<DateRange>(
+    initialDateRange || { startDate: null, endDate: null }
+  );
+  const [selectedMonth, setSelectedMonth] = useState<string>(initialSelectedMonth || '');
+  const [selectedYear, setSelectedYear] = useState<string>(initialSelectedYear || '');
   const [showDateDropdown, setShowDateDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const itemsPerPage = 20;
@@ -70,8 +79,13 @@ const ReportsTable: React.FC<ReportsTableProps> = ({ selectedSalle }) => {
     };
   }, []);
 
-  // Initialize dates
+  // Initialize dates - only if no initial values provided
   useEffect(() => {
+    // Skip initialization if initial values were provided
+    if (initialDateRange || initialSelectedMonth || initialSelectedYear) {
+      return;
+    }
+
     const today = new Date();
     const currentYear = today.getFullYear().toString();
     const currentMonth = (today.getMonth() + 1).toString().padStart(2, '0');
@@ -93,7 +107,23 @@ const ReportsTable: React.FC<ReportsTableProps> = ({ selectedSalle }) => {
         endDate: formatDate(endOfMonth)
       });
     }
-  }, [dateFilterType]);
+  }, [dateFilterType, initialDateRange, initialSelectedMonth, initialSelectedYear]);
+
+  // Update state when initial props change (when coming from dashboard)
+  useEffect(() => {
+    if (initialDateFilterType) {
+      setDateFilterType(initialDateFilterType);
+    }
+    if (initialDateRange) {
+      setDateRange(initialDateRange);
+    }
+    if (initialSelectedMonth) {
+      setSelectedMonth(initialSelectedMonth);
+    }
+    if (initialSelectedYear) {
+      setSelectedYear(initialSelectedYear);
+    }
+  }, [initialDateFilterType, initialDateRange, initialSelectedMonth, initialSelectedYear]);
 
   // Fetch reglements when selectedSalle or date changes
   useEffect(() => {
