@@ -1,7 +1,7 @@
-// src/components/RevenueChart.tsx
 import React, { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import '../styles/RevenueChart.css';
+import { useTranslation } from 'react-i18next';
 
 interface RevenueDataPoint {
   date: string;
@@ -41,6 +41,8 @@ const CustomTooltip: React.FC<any> = ({ active, payload, label }) => {
 };
 
 const RevenueChart: React.FC<RevenueChartProps> = ({ data, selectedDate, dateMode, isLoading }) => {
+  const { t } = useTranslation();
+  
   // This will completely unmount and remount the component
   const [shouldRender, setShouldRender] = useState(true);
   const [chartKey, setChartKey] = useState(`chart-${Date.now()}`);
@@ -82,9 +84,9 @@ const RevenueChart: React.FC<RevenueChartProps> = ({ data, selectedDate, dateMod
   if (isLoading) {
     return (
       <div className="revenue-chart-container">
-        <h3 className="revenue-title">Total Revenue</h3>
+        <h3 className="revenue-title">{t('revenue.totalRevenue')}</h3>
         <div className="chart-loading">
-          <p>Loading revenue data...</p>
+          <p>{t('revenue.loadingData')}</p>
         </div>
       </div>
     );
@@ -93,9 +95,9 @@ const RevenueChart: React.FC<RevenueChartProps> = ({ data, selectedDate, dateMod
   if (data.length === 0) {
     return (
       <div className="revenue-chart-container">
-        <h3 className="revenue-title">Total Revenue</h3>
+        <h3 className="revenue-title">{t('revenue.totalRevenue')}</h3>
         <div className="chart-empty">
-          <p>No revenue data available for the selected period</p>
+          <p>{t('revenue.noData')}</p>
         </div>
       </div>
     );
@@ -139,7 +141,7 @@ const RevenueChart: React.FC<RevenueChartProps> = ({ data, selectedDate, dateMod
 
   return (
     <div className="revenue-chart-container">
-      <h3 className="revenue-title">Total Revenue</h3>
+      <h3 className="revenue-title">{t('revenue.totalRevenue')}</h3>
       <div className="chart-container">
         {shouldRender && (
           <div key={chartKey} style={{ width: '100%', height: '300px' }}>
@@ -182,7 +184,7 @@ const RevenueChart: React.FC<RevenueChartProps> = ({ data, selectedDate, dateMod
         )}
         {!shouldRender && (
           <div className="chart-loading" style={{ height: '300px' }}>
-            <p>Updating chart...</p>
+            <p>{t('revenue.updatingChart')}</p>
           </div>
         )}
       </div>

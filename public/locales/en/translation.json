@@ -1,0 +1,123 @@
+{
+  "header": {
+    "userDashboard": "User Dashboard",
+    "adminDashboard": "Admin Dashboard"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "reports": "Reports",
+    "logout": "Logout",
+    "users": "Users",
+    "gyms": "Gyms",
+    "links": "Links"
+  },
+  "welcome": {
+    "greeting": "Welcome,",
+    "selectGym": "Please select a gym to view detailed statistics",
+    "loadingData": "Loading data...",
+    "loadingDashboard": "Loading dashboard..."
+  },
+  "dateFilter": {
+    "date": "Date",
+    "period": "Period",
+    "month": "Month",
+    "year": "Year",
+    "to": "To",
+    "january": "January",
+    "february": "February",
+    "march": "March",
+    "april": "April",
+    "may": "May",
+    "june": "June",
+    "july": "July",
+    "august": "August",
+    "september": "September",
+    "october": "October",
+    "november": "November",
+    "december": "December"
+  },
+  "stats": {
+    "totalRevenue": "Total Revenue",
+    "totalPayments": "Total Payments",
+    "newClients": "New Clients",
+    "newSubscriptions": "New Subscriptions",
+    "expiredContracts": "Expired Contracts",
+    "activeClients": "Active Clients"
+  },
+  "revenue": {
+    "totalRevenue": "Total Revenue",
+    "loadingData": "Loading revenue data...",
+    "noData": "No revenue data available for the selected period",
+    "updatingChart": "Updating chart...",
+    "rangeExceeded": "Your selected range exceeds 30 days. Only showing the first 30 days of data."
+  },
+  "distribution": {
+    "revenueBy": "Revenue By",
+    "subscriptionCategory": "Subscription Category",
+    "paymentMethod": "Payment Method",
+    "agent": "Agent",
+    "loadingData": "Loading distribution data...",
+    "noData": "No distribution data available for the selected period",
+    "categories": "Categories:",
+    "details": "Details:",
+    "totalEarnings": "Total Earnings",
+    "total": "Total",
+    "others": "Others",
+    "unknown": "Unknown"
+  },
+  "reports": {
+    "title": "Reports - All Data",
+    "titleWithGym": "Reports - {{gymName}}",
+    "selectGym": "Please select a gym to view reports",
+    "loading": "Loading reports data...",
+    "search": "Search...",
+    "noResults": "No results",
+    "pagination": {
+      "showing": "Showing {{start}} to {{end}} of {{total}} entries"
+    },
+    "pdf": {
+      "export": "Export PDF",
+      "exporting": "Exporting...",
+      "title": "Reports",
+      "gym": "Gym",
+      "period": "Period",
+      "total": "Total",
+      "records": "records",
+      "totalAmount": "Total Amount",
+      "generatedOn": "Generated on",
+      "filename": "Reports",
+      "noData": "No data to export",
+      "error": "Error generating PDF. Please try again.",
+      "selectColumns": "Select Columns for PDF Export",
+      "selectUpTo": "Select up to",
+      "columns": "columns",
+      "selected": "selected",
+      "cancel": "Cancel",
+      "exportSelected": "Export Selected Columns",
+      "maxColumnsReached": "Maximum 14 columns allowed",
+      "noColumnsSelected": "Please select at least one column"
+    },
+    "table": {
+      "id": "ID",
+      "contract": "Contract",
+      "client": "Client",
+      "contractDate": "Contract Date",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "user": "User",
+      "family": "Family",
+      "subFamily": "Sub-Family",
+      "description": "Description",
+      "insuranceDate": "Insurance Date",
+      "amount": "Amount",
+      "paymentMethod": "Payment Method",
+      "rate": "Rate",
+      "paymentDate": "Payment Date",
+      "gym": "Gym"
+    }
+  },
+  "language": {
+    "english": "English",
+    "french": "Français"
+  }
+}

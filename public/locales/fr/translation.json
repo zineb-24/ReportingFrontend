@@ -1,0 +1,123 @@
+{
+  "header": {
+    "userDashboard": "Tableau de Bord Utilisateur",
+    "adminDashboard": "Tableau de Bord Administrateur"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "reports": "Rapports",
+    "logout": "Déconnexion",
+    "users": "Utilisateurs",
+    "gyms": "Salles de sport",
+    "links": "Liens"
+  },
+  "welcome": {
+    "greeting": "Bienvenue,",
+    "selectGym": "Veuillez sélectionner une salle de sport pour voir les statistiques détaillées",
+    "loadingData": "Chargement des données...",
+    "loadingDashboard": "Chargement du tableau de bord..."
+  },
+  "dateFilter": {
+    "date": "Date",
+    "period": "Période",
+    "month": "Mois",
+    "year": "Année",
+    "to": "À",
+    "january": "Janvier",
+    "february": "Février",
+    "march": "Mars",
+    "april": "Avril",
+    "may": "Mai",
+    "june": "Juin",
+    "july": "Juillet",
+    "august": "Août",
+    "september": "Septembre",
+    "october": "Octobre",
+    "november": "Novembre",
+    "december": "Décembre"
+  },
+  "stats": {
+    "totalRevenue": "Revenu total",
+    "totalPayments": "Total des paiements",
+    "newClients": "Nouveaux clients",
+    "newSubscriptions": "Nouveaux abonnements",
+    "expiredContracts": "Contrats expirés",
+    "activeClients": "Clients actifs"
+  },
+  "revenue": {
+    "totalRevenue": "Revenu total",
+    "loadingData": "Chargement des données de revenus...",
+    "noData": "Aucune donnée de revenu disponible pour la période sélectionnée",
+    "updatingChart": "Mise à jour du graphique...",
+    "rangeExceeded": "Votre plage sélectionnée dépasse 30 jours. Affichage des 30 premiers jours de données uniquement."
+  },
+  "distribution": {
+    "revenueBy": "Revenus par",
+    "subscriptionCategory": "Catégorie d'abonnement",
+    "paymentMethod": "Mode de paiement",
+    "agent": "Agent",
+    "loadingData": "Chargement des données de distribution...",
+    "noData": "Aucune donnée de distribution disponible pour la période sélectionnée",
+    "categories": "Catégories :",
+    "details": "Détails :",
+    "totalEarnings": "Gains totaux",
+    "total": "Total",
+    "others": "Autres",
+    "unknown": "Inconnu"
+  },
+  "reports": {
+    "title": "Rapports - Toutes les données",
+    "titleWithGym": "Rapports - {{gymName}}",
+    "selectGym": "Veuillez sélectionner une salle de sport pour voir les rapports",
+    "loading": "Chargement des données de rapports...",
+    "search": "Rechercher...",
+    "noResults": "Aucun résultat",
+    "pagination": {
+      "showing": "Affichage de {{start}} à {{end}} sur {{total}} entrées"
+    },
+    "pdf": {
+      "export": "Exporter PDF",
+      "exporting": "Exportation...",
+      "title": "Rapports",
+      "gym": "Salle de sport",
+      "period": "Période",
+      "total": "Total",
+      "records": "enregistrements",
+      "totalAmount": "Montant total",
+      "generatedOn": "Généré le",
+      "filename": "Rapports",
+      "noData": "Aucune donnée à exporter",
+      "selectColumns": "Sélectionner les colonnes pour l'export PDF",
+      "selectUpTo": "Sélectionnez jusqu'à",
+      "columns": "colonnes",
+      "selected": "sélectionnées",
+      "cancel": "Annuler",
+      "exportSelected": "Exporter les colonnes sélectionnées", 
+      "maxColumnsReached": "Maximum 14 colonnes autorisées",
+      "noColumnsSelected": "Veuillez sélectionner au moins une colonne",
+      "error": "Erreur lors de la génération du PDF. Veuillez réessayer."
+    },
+    "table": {
+      "id": "ID",
+      "contract": "Contrat",
+      "client": "Client",
+      "contractDate": "Date du contrat",
+      "startDate": "Date de début",
+      "endDate": "Date de fin",
+      "user": "Utilisateur",
+      "family": "Famille",
+      "subFamily": "Sous-famille",
+      "description": "Description",
+      "insuranceDate": "Date d'assurance",
+      "amount": "Montant",
+      "paymentMethod": "Mode de paiement",
+      "rate": "Tarif",
+      "paymentDate": "Date de paiement",
+      "gym": "Salle de sport"
+    }
+  },
+  "language": {
+    "english": "English",
+    "french": "Français"
+  }
+}

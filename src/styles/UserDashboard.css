@@ -25,7 +25,6 @@
 .customer-logo-container {
   display: flex;
   align-items: center;
-  margin-top: 25px;
   margin-left: 10px;
 }
 
@@ -44,7 +43,7 @@
   text-align: center;
 }
 
-.customer-profile {
+/*.customer-profile {
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -72,7 +71,7 @@
   width: 20px;
   height: 20px;
   color: white;
-}
+}*/
 
 /* Main Content Layout */
 .customer-content {

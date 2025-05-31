@@ -1,6 +1,9 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import api from '../services/api';
 import '../styles/Reports.css';
+import { useTranslation } from 'react-i18next';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 interface ReglementData {
   ID_reglement: number;
@@ -50,6 +53,7 @@ const ReportsTable: React.FC<ReportsTableProps> = ({
   initialSelectedMonth,
   initialSelectedYear
 }) => {
+  const { t } = useTranslation();
   const [reglements, setReglements] = useState<ReglementData[]>([]);
   const [filteredReglements, setFilteredReglements] = useState<ReglementData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -62,8 +66,69 @@ const ReportsTable: React.FC<ReportsTableProps> = ({
   const [selectedMonth, setSelectedMonth] = useState<string>(initialSelectedMonth || '');
   const [selectedYear, setSelectedYear] = useState<string>(initialSelectedYear || '');
   const [showDateDropdown, setShowDateDropdown] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [showColumnSelector, setShowColumnSelector] = useState(false);
+  const [selectedColumns, setSelectedColumns] = useState<string[]>([]);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const modalBodyRef = useRef<HTMLDivElement>(null);
   const itemsPerPage = 20;
+
+  // Define all available columns
+  const availableColumns = [
+    { key: 'id', label: t('reports.table.id'), field: 'ID_reglement' },
+    { key: 'contract', label: t('reports.table.contract'), field: 'CONTRAT' },
+    { key: 'client', label: t('reports.table.client'), field: 'CLIENT' },
+    { key: 'contractDate', label: t('reports.table.contractDate'), field: 'DATE_CONTRAT' },
+    { key: 'startDate', label: t('reports.table.startDate'), field: 'DATE_DEBUT' },
+    { key: 'endDate', label: t('reports.table.endDate'), field: 'DATE_FIN' },
+    { key: 'user', label: t('reports.table.user'), field: 'USERC' },
+    { key: 'family', label: t('reports.table.family'), field: 'FAMILLE' },
+    { key: 'subFamily', label: t('reports.table.subFamily'), field: 'SOUSFAMILLE' },
+    { key: 'description', label: t('reports.table.description'), field: 'LIBELLE' },
+    { key: 'insuranceDate', label: t('reports.table.insuranceDate'), field: 'DATE_ASSURANCE' },
+    { key: 'amount', label: t('reports.table.amount'), field: 'MONTANT' },
+    { key: 'paymentMethod', label: t('reports.table.paymentMethod'), field: 'MODE' },
+    { key: 'rate', label: t('reports.table.rate'), field: 'TARIFAIRE' },
+    { key: 'paymentDate', label: t('reports.table.paymentDate'), field: 'DATE_REGLEMENT' },
+    { key: 'gym', label: t('reports.table.gym'), field: 'salle_name' }
+  ];
+
+  // Initialize with default essential columns (max 14)
+  useEffect(() => {
+    if (selectedColumns.length === 0) {
+      setSelectedColumns([
+        'id', 'contract', 'client', 'contractDate', 'startDate', 
+        'endDate', 'amount', 'paymentMethod', 'paymentDate', 'gym'
+      ]);
+    }
+  }, []);
+
+  // Handle column selection
+  const handleColumnToggle = useCallback((columnKey: string) => {
+    const currentScroll = modalBodyRef.current?.scrollTop || 0;
+    
+    setSelectedColumns(prev => {
+      const newColumns = prev.includes(columnKey)
+        ? prev.filter(key => key !== columnKey)
+        : prev.length < 14 
+          ? [...prev, columnKey]
+          : (alert(t('reports.pdf.maxColumnsReached')), prev);
+      
+      // Immediate restoration
+      if (modalBodyRef.current) {
+        modalBodyRef.current.scrollTop = currentScroll;
+      }
+      
+      // Backup after React re-render
+      requestAnimationFrame(() => {
+        if (modalBodyRef.current) {
+          modalBodyRef.current.scrollTop = currentScroll;
+        }
+      });
+      
+      return newColumns;
+    });
+  }, [t]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -214,6 +279,209 @@ const ReportsTable: React.FC<ReportsTableProps> = ({
     }
   };
 
+  // Get formatted date range for PDF header
+  const getDateRangeText = (): string => {
+    if (dateFilterType === 'date' && dateRange.startDate) {
+      return formatDateTime(dateRange.startDate);
+    } else if (dateFilterType === 'period' && dateRange.startDate && dateRange.endDate) {
+      return `${formatDateTime(dateRange.startDate)} - ${formatDateTime(dateRange.endDate)}`;
+    } else if (dateFilterType === 'month' && selectedMonth && selectedYear) {
+      const monthNames = [
+        t('dateFilter.january'), t('dateFilter.february'), t('dateFilter.march'),
+        t('dateFilter.april'), t('dateFilter.may'), t('dateFilter.june'),
+        t('dateFilter.july'), t('dateFilter.august'), t('dateFilter.september'),
+        t('dateFilter.october'), t('dateFilter.november'), t('dateFilter.december')
+      ];
+      return `${monthNames[parseInt(selectedMonth) - 1]} ${selectedYear}`;
+    } else if (dateFilterType === 'year' && selectedYear) {
+      return selectedYear;
+    }
+    return '';
+  };
+
+  // Updated PDF export function
+  const exportToPDF = async () => {
+    if (!selectedSalle || filteredReglements.length === 0) {
+      alert(t('reports.pdf.noData'));
+      return;
+    }
+
+    if (selectedColumns.length === 0) {
+      alert(t('reports.pdf.noColumnsSelected'));
+      return;
+    }
+
+    setIsExporting(true);
+
+    try {
+      const doc = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      // Add title and info
+      doc.setFontSize(16);
+      doc.setFont('helvetica', 'bold');
+      doc.text(t('reports.pdf.title'), 20, 20);
+
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'normal');
+      doc.text(`${t('reports.pdf.gym')}: ${selectedSalle.name}`, 20, 30);
+      
+      const dateRangeText = getDateRangeText();
+      if (dateRangeText) {
+        doc.text(`${t('reports.pdf.period')}: ${dateRangeText}`, 20, 40);
+      }
+
+      doc.text(`${t('reports.pdf.total')}: ${filteredReglements.length} ${t('reports.pdf.records')}`, 20, 50);
+
+      // Prepare selected columns data
+      const selectedColumnDefs = availableColumns.filter(col => selectedColumns.includes(col.key));
+      const tableHeaders = selectedColumnDefs.map(col => col.label);
+
+      const tableData = filteredReglements.map(reglement => {
+        return selectedColumnDefs.map(col => {
+          const value = reglement[col.field as keyof ReglementData];
+          
+          // Format specific fields
+          if (col.field === 'MONTANT') {
+            return formatCurrency(value as number);
+          } else if (col.field.includes('DATE_')) {
+            return formatDateTime(value as string);
+          } else {
+            return value?.toString() || '-';
+          }
+        });
+      });
+
+      // Calculate dynamic column widths based on number of selected columns
+      const availableWidth = 277; // A4 landscape width minus margins
+      const baseWidth = Math.floor(availableWidth / selectedColumns.length);
+      
+      // Create column styles with dynamic widths
+      const columnStyles: { [key: number]: { cellWidth: number } } = {};
+      selectedColumns.forEach((_, index) => {
+        columnStyles[index] = { cellWidth: baseWidth };
+      });
+
+      // Add table
+      autoTable(doc, {
+        head: [tableHeaders],
+        body: tableData,
+        startY: 60,
+        theme: 'grid',
+        styles: {
+          fontSize: selectedColumns.length > 10 ? 8 : 9, // Smaller font for more columns
+          cellPadding: selectedColumns.length > 10 ? 1 : 1.5,
+          overflow: 'linebreak',
+          halign: 'left'
+        },
+        headStyles: {
+          fillColor: [66, 165, 245],
+          textColor: 255,
+          fontStyle: 'bold',
+          fontSize: selectedColumns.length > 10 ? 8 : 9
+        },
+        columnStyles,
+        margin: { left: 10, right: 10 },
+        tableWidth: 'auto'
+      });
+
+      // Calculate total amount if amount column is selected
+      if (selectedColumns.includes('amount')) {
+        const totalAmount = filteredReglements.reduce((sum, reglement) => sum + reglement.MONTANT, 0);
+        const finalY = (doc as any).lastAutoTable.finalY || 60;
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'bold');
+        doc.text(`${t('reports.pdf.totalAmount')}: ${formatCurrency(totalAmount)}`, 20, finalY + 15);
+      }
+
+      // Add generation timestamp
+      const finalY = (doc as any).lastAutoTable.finalY || 60;
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      const timestamp = new Date().toLocaleString('fr-FR');
+      doc.text(`${t('reports.pdf.generatedOn')}: ${timestamp}`, 20, finalY + 25);
+
+      // Generate filename
+      const filename = `${t('reports.pdf.filename')}_${selectedSalle.name}_${dateRangeText.replace(/[^a-zA-Z0-9]/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
+
+      doc.save(filename);
+
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert(t('reports.pdf.error'));
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  // Column Selector Modal Component
+  const ColumnSelectorModal = () => {
+    if (!showColumnSelector) return null;
+
+    return (
+      <div className="reports-modal-overlay">
+        <div className="reports-modal">
+          <div className="reports-modal-header">
+            <h3>{t('reports.pdf.selectColumns')}</h3>
+            <button 
+              onClick={() => setShowColumnSelector(false)}
+              className="reports-modal-close"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path fillRule="evenodd" d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z" clipRule="evenodd" />
+              </svg>
+            </button>
+          </div>
+          
+          <div className="reports-modal-body" ref={modalBodyRef}>
+            <p className="reports-column-info">
+              {t('reports.pdf.selectUpTo')} <strong>14</strong> {t('reports.pdf.columns')} 
+              ({selectedColumns.length}/14 {t('reports.pdf.selected')})
+            </p>
+            
+            <div className="reports-column-grid">
+              {availableColumns.map(column => (
+                <label key={column.key} className="reports-column-option">
+                  <input
+                    type="checkbox"
+                    checked={selectedColumns.includes(column.key)}
+                    onChange={() => handleColumnToggle(column.key)}
+                    disabled={!selectedColumns.includes(column.key) && selectedColumns.length >= 14}
+                  />
+                  <span className={selectedColumns.includes(column.key) ? 'selected' : ''}>
+                    {column.label}
+                  </span>
+                </label>
+              ))}
+            </div>
+          </div>
+          
+          <div className="reports-modal-footer">
+            <button 
+              onClick={() => setShowColumnSelector(false)}
+              className="reports-modal-cancel"
+            >
+              {t('reports.pdf.cancel')}
+            </button>
+            <button 
+              onClick={() => {
+                setShowColumnSelector(false);
+                exportToPDF();
+              }}
+              disabled={selectedColumns.length === 0}
+              className="reports-modal-export"
+            >
+              {t('reports.pdf.exportSelected')}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newDate = event.target.value;
     
@@ -267,11 +535,11 @@ const ReportsTable: React.FC<ReportsTableProps> = ({
 
   const getDateFilterLabel = () => {
     switch (dateFilterType) {
-      case 'date': return 'Date';
-      case 'period': return 'Period';
-      case 'month': return 'Month';
-      case 'year': return 'Year';
-      default: return 'Date';
+      case 'date': return t('dateFilter.date');
+      case 'period': return t('dateFilter.period');
+      case 'month': return t('dateFilter.month');
+      case 'year': return t('dateFilter.year');
+      default: return t('dateFilter.date');
     }
   };
 
@@ -294,7 +562,7 @@ const ReportsTable: React.FC<ReportsTableProps> = ({
   };
 
   if (loading && !reglements.length) {
-    return <div className="reports-loading-indicator">Loading reports data...</div>;
+    return <div className="reports-loading-indicator">{t('reports.loading')}</div>;
   }
 
   if (!selectedSalle) {
@@ -306,11 +574,11 @@ const ReportsTable: React.FC<ReportsTableProps> = ({
               <path fillRule="evenodd" d="M5.625 1.5H9a3.75 3.75 0 013.75 3.75v1.875c0 1.036.84 1.875 1.875 1.875H16.5a3.75 3.75 0 013.75 3.75v7.875c0 1.035-.84 1.875-1.875 1.875H5.625a1.875 1.875 0 01-1.875-1.875V3.375c0-1.036.84-1.875 1.875-1.875zM9.75 14.25a.75.75 0 000 1.5H15a.75.75 0 000-1.5H9.75z" clipRule="evenodd" />
               <path d="M14.25 5.25a5.23 5.23 0 00-1.279-3.434 9.768 9.768 0 016.963 6.963A5.23 5.23 0 0016.5 7.5h-1.875a.375.375 0 01-.375-.375V5.25z" />
             </svg>
-            Reports - All Data
+            {t('reports.title')}
           </h3>
         </div>
         <div style={{ padding: '2rem', textAlign: 'center', color: '#64748b' }}>
-          <p>Please select a gym to view reports data</p>
+          <p>{t('reports.selectGym')}</p>
         </div>
       </div>
     );
@@ -325,7 +593,7 @@ const ReportsTable: React.FC<ReportsTableProps> = ({
             <path fillRule="evenodd" d="M5.625 1.5H9a3.75 3.75 0 013.75 3.75v1.875c0 1.036.84 1.875 1.875 1.875H16.5a3.75 3.75 0 013.75 3.75v7.875c0 1.035-.84 1.875-1.875 1.875H5.625a1.875 1.875 0 01-1.875-1.875V3.375c0-1.036.84-1.875 1.875-1.875zM9.75 14.25a.75.75 0 000 1.5H15a.75.75 0 000-1.5H9.75z" clipRule="evenodd" />
             <path d="M14.25 5.25a5.23 5.23 0 00-1.279-3.434 9.768 9.768 0 016.963 6.963A5.23 5.23 0 0016.5 7.5h-1.875a.375.375 0 01-.375-.375V5.25z" />
           </svg>
-          Reports - All Data ({selectedSalle.name})
+          {t('reports.titleWithGym', { gymName: selectedSalle.name })}
         </h3>
 
         <div className="reports-controls">
@@ -354,7 +622,7 @@ const ReportsTable: React.FC<ReportsTableProps> = ({
                   className="reports-date-input"
                 />
                 
-                <span className="reports-date-separator">To</span>
+                <span className="reports-date-separator">{t('dateFilter.to')}</span>
                 
                 <input
                   type="date"
@@ -373,18 +641,18 @@ const ReportsTable: React.FC<ReportsTableProps> = ({
                   onChange={handleMonthChange}
                   className="reports-month-select"
                 >
-                  <option value="01">January</option>
-                  <option value="02">February</option>
-                  <option value="03">March</option>
-                  <option value="04">April</option>
-                  <option value="05">May</option>
-                  <option value="06">June</option>
-                  <option value="07">July</option>
-                  <option value="08">August</option>
-                  <option value="09">September</option>
-                  <option value="10">October</option>
-                  <option value="11">November</option>
-                  <option value="12">December</option>
+                  <option value="01">{t('dateFilter.january')}</option>
+                  <option value="02">{t('dateFilter.february')}</option>
+                  <option value="03">{t('dateFilter.march')}</option>
+                  <option value="04">{t('dateFilter.april')}</option>
+                  <option value="05">{t('dateFilter.may')}</option>
+                  <option value="06">{t('dateFilter.june')}</option>
+                  <option value="07">{t('dateFilter.july')}</option>
+                  <option value="08">{t('dateFilter.august')}</option>
+                  <option value="09">{t('dateFilter.september')}</option>
+                  <option value="10">{t('dateFilter.october')}</option>
+                  <option value="11">{t('dateFilter.november')}</option>
+                  <option value="12">{t('dateFilter.december')}</option>
                 </select>
                 
                 <input
@@ -394,7 +662,7 @@ const ReportsTable: React.FC<ReportsTableProps> = ({
                   min="2020"
                   max="2030"
                   className="reports-year-input"
-                  placeholder="Year"
+                  placeholder={t('dateFilter.year')}
                 />
               </div>
             )}
@@ -408,7 +676,7 @@ const ReportsTable: React.FC<ReportsTableProps> = ({
                   min="2020"
                   max="2030"
                   className="reports-year-input"
-                  placeholder="Year"
+                  placeholder={t('dateFilter.year')}
                 />
               </div>
             )}
@@ -431,43 +699,71 @@ const ReportsTable: React.FC<ReportsTableProps> = ({
                     className={`reports-dropdown-option ${dateFilterType === 'date' ? 'reports-active' : ''}`}
                     onClick={() => handleDateFilterTypeChange('date')}
                   >
-                    Date
+                    {t('dateFilter.date')}
                   </div>
                   <div 
                     className={`reports-dropdown-option ${dateFilterType === 'period' ? 'reports-active' : ''}`}
                     onClick={() => handleDateFilterTypeChange('period')}
                   >
-                    Period
+                    {t('dateFilter.period')}
                   </div>
                   <div 
                     className={`reports-dropdown-option ${dateFilterType === 'month' ? 'reports-active' : ''}`}
                     onClick={() => handleDateFilterTypeChange('month')}
                   >
-                    Month
+                    {t('dateFilter.month')}
                   </div>
                   <div 
                     className={`reports-dropdown-option ${dateFilterType === 'year' ? 'reports-active' : ''}`}
                     onClick={() => handleDateFilterTypeChange('year')}
                   >
-                    Year
+                    {t('dateFilter.year')}
                   </div>
                 </div>
               )}
             </div>
           </div>
 
-          {/* Search */}
-          <div className="reports-search-container">
-            <input 
-              type="text" 
-              placeholder="Search..." 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="reports-search-input"
-            />
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="reports-search-icon">
-              <path fillRule="evenodd" d="M10.5 3.75a6.75 6.75 0 100 13.5 6.75 6.75 0 000-13.5zM2.25 10.5a8.25 8.25 0 1114.59 5.28l4.69 4.69a.75.75 0 11-1.06 1.06l-4.69-4.69A8.25 8.25 0 012.25 10.5z" clipRule="evenodd" />
-            </svg>
+          {/* Search and Export */}
+          <div className="reports-actions">
+            {/* Search */}
+            <div className="reports-search-container">
+              <input 
+                type="text" 
+                placeholder={t('reports.search')} 
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="reports-search-input"
+              />
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="reports-search-icon">
+                <path fillRule="evenodd" d="M10.5 3.75a6.75 6.75 0 100 13.5 6.75 6.75 0 000-13.5zM2.25 10.5a8.25 8.25 0 1114.59 5.28l4.69 4.69a.75.75 0 11-1.06 1.06l-4.69-4.69A8.25 8.25 0 012.25 10.5z" clipRule="evenodd" />
+              </svg>
+            </div>
+
+            {/* Export PDF Button */}
+            <button 
+              onClick={() => setShowColumnSelector(true)}
+              disabled={isExporting || filteredReglements.length === 0}
+              className="reports-export-button"
+            >
+              {isExporting ? (
+                <>
+                  <svg className="reports-spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  {t('reports.pdf.exporting')}
+                </>
+              ) : (
+                <>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="reports-export-icon">
+                    <path fillRule="evenodd" d="M5.625 1.5H9a3.75 3.75 0 013.75 3.75v1.875c0 1.036.84 1.875 1.875 1.875H16.5a3.75 3.75 0 013.75 3.75v7.875c0 1.035-.84 1.875-1.875 1.875H5.625a1.875 1.875 0 01-1.875-1.875V3.375c0-1.036.84-1.875 1.875-1.875zM9.75 14.25a.75.75 0 000 1.5H15a.75.75 0 000-1.5H9.75z" clipRule="evenodd" />
+                    <path d="M14.25 5.25a5.23 5.23 0 00-1.279-3.434 9.768 9.768 0 016.963 6.963A5.23 5.23 0 0016.5 7.5h-1.875a.375.375 0 01-.375-.375V5.25z" />
+                  </svg>
+                  {t('reports.pdf.export')}
+                </>
+              )}
+            </button>
           </div>
         </div>
       </div>
@@ -477,22 +773,22 @@ const ReportsTable: React.FC<ReportsTableProps> = ({
         <table className="reports-table">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Contract</th>
-              <th>Client</th>
-              <th>Contract Date</th>
-              <th>Start Date</th>
-              <th>End Date</th>
-              <th>User</th>
-              <th>Family</th>
-              <th>Sub-Family</th>
-              <th>Description</th>
-              <th>Insurance Date</th>
-              <th>Amount</th>
-              <th>Payment Method</th>
-              <th>Rate</th>
-              <th>Payment Date</th>
-              <th>Gym</th>
+              <th>{t('reports.table.id')}</th>
+              <th>{t('reports.table.contract')}</th>
+              <th>{t('reports.table.client')}</th>
+              <th>{t('reports.table.contractDate')}</th>
+              <th>{t('reports.table.startDate')}</th>
+              <th>{t('reports.table.endDate')}</th>
+              <th>{t('reports.table.user')}</th>
+              <th>{t('reports.table.family')}</th>
+              <th>{t('reports.table.subFamily')}</th>
+              <th>{t('reports.table.description')}</th>
+              <th>{t('reports.table.insuranceDate')}</th>
+              <th>{t('reports.table.amount')}</th>
+              <th>{t('reports.table.paymentMethod')}</th>
+              <th>{t('reports.table.rate')}</th>
+              <th>{t('reports.table.paymentDate')}</th>
+              <th>{t('reports.table.gym')}</th>
             </tr>
           </thead>
           <tbody>
@@ -524,8 +820,12 @@ const ReportsTable: React.FC<ReportsTableProps> = ({
       <div className="reports-pagination">
         <span>
           {filteredReglements.length > 0 
-            ? `${indexOfFirstItem + 1}-${Math.min(indexOfLastItem, filteredReglements.length)} of ${filteredReglements.length}` 
-            : 'No results'}
+            ? t('reports.pagination.showing', {
+                start: indexOfFirstItem + 1,
+                end: Math.min(indexOfLastItem, filteredReglements.length),
+                total: filteredReglements.length
+              })
+            : t('reports.noResults')}
         </span>
         <div className="reports-pagination-buttons">
           <button 
@@ -548,6 +848,9 @@ const ReportsTable: React.FC<ReportsTableProps> = ({
           </button>
         </div>
       </div>
+
+      {/* Column Selector Modal */}
+      <ColumnSelectorModal />
     </div>
   );
 };

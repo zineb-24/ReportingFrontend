@@ -1,8 +1,8 @@
-// src/components/RevenueDistribution.tsx
 import React, { useState, useEffect } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import api from '../services/api';
 import '../styles/RevenuePieChart.css';
+import { useTranslation } from 'react-i18next';
 
 interface DistributionDataPoint {
   name: string;
@@ -43,6 +43,7 @@ const RevenueDistribution: React.FC<RevenueDistributionProps> = ({
   startDate, 
   endDate 
 }) => {
+  const { t } = useTranslation();
   const [distributionData, setDistributionData] = useState<DistributionDataPoint[]>([]);
   const [distributionTotal, setDistributionTotal] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -64,7 +65,7 @@ const RevenueDistribution: React.FC<RevenueDistributionProps> = ({
           {hasDetails && (
             <div className="tooltip-details">
               <p className="details-header">
-                {category === 'subscription' ? 'Categories:' : 'Details:'}
+                {category === 'subscription' ? t('distribution.categories') : t('distribution.details')}
               </p>
               <ul className="details-list">
                 {data.details.map((item: any, index: number) => (
@@ -122,9 +123,12 @@ const RevenueDistribution: React.FC<RevenueDistributionProps> = ({
           }
         });
         
-        // Assign colors to data points
+        // Assign colors to data points and translate special names
         const coloredData = response.data.distribution_data.map((item: any, index: number) => ({
           ...item,
+          name: item.name === 'Unknown' ? t('distribution.unknown') : 
+                item.name === 'Others' ? t('distribution.others') : 
+                item.name,
           color: COLORS[index % COLORS.length]
         }));
         
@@ -138,10 +142,20 @@ const RevenueDistribution: React.FC<RevenueDistributionProps> = ({
     };
     
     fetchDistributionData();
-  }, [salleId, startDate, endDate, dateMode, category]);
+  }, [salleId, startDate, endDate, dateMode, category, t]);
 
   const handleCategoryChange = (newCategory: 'payment_method' | 'subscription' | 'agent') => {
     setCategory(newCategory);
+  };
+
+  // Get translated category name for table header
+  const getCategoryName = () => {
+    switch (category) {
+      case 'payment_method': return t('distribution.paymentMethod');
+      case 'subscription': return t('distribution.subscriptionCategory');
+      case 'agent': return t('distribution.agent');
+      default: return t('distribution.category');
+    }
   };
 
   if (!salleId) {
@@ -151,7 +165,7 @@ const RevenueDistribution: React.FC<RevenueDistributionProps> = ({
   return (
     <div className="distribution-container">
       <div className="distribution-header">
-        <h3>Revenue By</h3>
+        <h3>{t('distribution.revenueBy')}</h3>
         <div className="category-buttons">
           <button 
             className={category === 'subscription' ? 'active' : ''} 
@@ -161,7 +175,7 @@ const RevenueDistribution: React.FC<RevenueDistributionProps> = ({
               <path fillRule="evenodd" d="M7.502 6h7.128A3.375 3.375 0 0118 9.375v9.375a3 3 0 003-3V6.108c0-1.505-1.125-2.811-2.664-2.94a48.972 48.972 0 00-.673-.05A3 3 0 0015 1.5h-1.5a3 3 0 00-2.663 1.618c-.225.015-.45.032-.673.05C8.662 3.295 7.554 4.542 7.502 6zM13.5 3A1.5 1.5 0 0012 4.5h4.5A1.5 1.5 0 0015 3h-1.5z" clipRule="evenodd" />
               <path fillRule="evenodd" d="M3 9.375C3 8.339 3.84 7.5 4.875 7.5h9.75c1.036 0 1.875.84 1.875 1.875v11.25c0 1.035-.84 1.875-1.875 1.875h-9.75A1.875 1.875 0 013 20.625V9.375zM6 12a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75H6.75a.75.75 0 01-.75-.75V12zm2.25 0a.75.75 0 01.75-.75h3.75a.75.75 0 010 1.5H9a.75.75 0 01-.75-.75z" clipRule="evenodd" />
             </svg>
-            Subscription Category
+            {t('distribution.subscriptionCategory')}
           </button>
           <button 
             className={category === 'payment_method' ? 'active' : ''} 
@@ -171,7 +185,7 @@ const RevenueDistribution: React.FC<RevenueDistributionProps> = ({
               <path d="M4.5 3.75a3 3 0 00-3 3v.75h21v-.75a3 3 0 00-3-3h-15z" />
               <path fillRule="evenodd" d="M22.5 9.75h-21v7.5a3 3 0 003 3h15a3 3 0 003-3v-7.5zm-18 3.75a.75.75 0 01.75-.75h6a.75.75 0 010 1.5h-6a.75.75 0 01-.75-.75zm.75 2.25a.75.75 0 000 1.5h3a.75.75 0 000-1.5h-3z" clipRule="evenodd" />
             </svg>
-            Payment Method
+            {t('distribution.paymentMethod')}
           </button>
           <button 
             className={category === 'agent' ? 'active' : ''} 
@@ -180,7 +194,7 @@ const RevenueDistribution: React.FC<RevenueDistributionProps> = ({
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="button-icon">
               <path fillRule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z" clipRule="evenodd" />
             </svg>
-            Agent
+            {t('distribution.agent')}
           </button>
         </div>
       </div>
@@ -188,11 +202,11 @@ const RevenueDistribution: React.FC<RevenueDistributionProps> = ({
       <div className="distribution-content">
         {isLoading ? (
           <div className="distribution-loading">
-            <p>Loading distribution data...</p>
+            <p>{t('distribution.loadingData')}</p>
           </div>
         ) : distributionData.length === 0 ? (
           <div className="distribution-empty">
-            <p>No distribution data available for the selected period</p>
+            <p>{t('distribution.noData')}</p>
           </div>
         ) : (
           <>
@@ -221,12 +235,8 @@ const RevenueDistribution: React.FC<RevenueDistributionProps> = ({
             <table>
                 <thead>
                 <tr>
-                    <th>
-                    {category === 'payment_method' ? 'Payment Method' : 
-                    category === 'subscription' ? 'Subscription Category' : 
-                    'Agent'}
-                    </th>
-                    <th className="amount-header">Total Earnings</th>
+                    <th>{getCategoryName()}</th>
+                    <th className="amount-header">{t('distribution.totalEarnings')}</th>
                     <th className="percent-header">%</th>
                 </tr>
                 </thead>
@@ -247,12 +257,12 @@ const RevenueDistribution: React.FC<RevenueDistributionProps> = ({
                     
                     {/* Add nested rows for subscription details (FAMILLE) or "Others" details */}
                     {((category === 'subscription' && item.details && item.details.length > 0) || 
-                      (item.name === 'Others' && item.details && item.details.length > 0)) && (
+                      (item.name === t('distribution.others') && item.details && item.details.length > 0)) && (
                         <tr>
                         <td colSpan={3} className="others-details-container">
                             <div className="others-details">
                             <h4>
-                              {category === 'subscription' ? 'Categories:' : 'Details:'}
+                              {category === 'subscription' ? t('distribution.categories') : t('distribution.details')}
                             </h4>
                             <table className="others-details-table">
                                 <tbody>
@@ -274,7 +284,7 @@ const RevenueDistribution: React.FC<RevenueDistributionProps> = ({
                 </tbody>
                 <tfoot>
                 <tr>
-                    <td>Total</td>
+                    <td>{t('distribution.total')}</td>
                     <td className="amount-cell">{formatNumber(distributionTotal)}</td>
                     <td className="percent-cell">100</td>
                 </tr>

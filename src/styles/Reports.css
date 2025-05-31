@@ -39,6 +39,13 @@
   flex-wrap: wrap;
 }
 
+/* Actions container for search and export */
+.reports-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
 /* Date Selector Styles */
 .reports-date-selector {
   display: flex;
@@ -76,17 +83,6 @@
   position: absolute;
   right: 12px;
 }
-
-/*cursor: pointer;
-  opacity: 1;
-  color: #64748b;
-  font-size: 16px;
-  width: 20px;
-  height: 20px;
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  transform: translateY(-50%);*/
 
 /* Firefox date input support */
 .reports-date-input::-moz-focus-inner {
@@ -242,6 +238,57 @@
   color: #ffffff;
 }
 
+/* Export Button Styles */
+.reports-export-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #10b981;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  white-space: nowrap;
+}
+
+.reports-export-button:hover:not(:disabled) {
+  background-color: #06a774;
+  transform: translateY(-1px);
+}
+
+.reports-export-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.reports-export-button:disabled {
+  background-color: #6b7280;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.reports-export-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* Loading spinner animation */
+.reports-spinner {
+  width: 16px;
+  height: 16px;
+  animation: spin 1s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 /* Table Styles */
 .reports-table-responsive {
   overflow-x: auto;
@@ -252,7 +299,6 @@
 .reports-table {
   width: auto;
   border-collapse: collapse;
-  /*min-width: 1800px;*/
 }
 
 .reports-table th {
@@ -266,7 +312,6 @@
   top: 0;
   z-index: 5;
   white-space: nowrap;
-  /*min-width: 120px;*/
 }
 
 .reports-table th:first-child {
@@ -308,9 +353,6 @@
   border-bottom: 1px solid #e2e8f0;
   color: #334155;
   white-space: nowrap;
-  /*overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 200px;*/
 }
 
 .reports-table td:first-child {
@@ -385,52 +427,190 @@
   color: #64748b;
 }
 
-/* Responsive Design */
-@media (max-width: 1200px) {
-  .reports-controls {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-  }
-  
-  .reports-date-selector {
-    flex-wrap: wrap;
-  }
+/* Modal Overlay */
+.reports-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
 }
 
-@media (max-width: 768px) {
-  .reports-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-    padding: 1rem;
-  }
-  
-  .reports-controls {
-    width: 100%;
-  }
-  
-  .reports-search-input {
-    width: 100%;
-  }
-  
-  .reports-date-selector {
-    width: 100%;
-    justify-content: flex-start;
-  }
-  
-  .reports-date-range-container,
-  .reports-month-year-container {
-    flex-direction: column;
-    align-items: flex-start;
-    width: 100%;
-  }
-  
-  .reports-date-input,
-  .reports-month-select,
-  .reports-year-input {
-    width: 100%;
-  }
+/* Modal Container */
+.reports-modal {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  max-width: 600px;
+  width: 100%;
+  max-height: 80vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* Modal Header */
+.reports-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  background-color: #42a5f5;
+  color: white;
+}
+
+.reports-modal-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.reports-modal-close {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.reports-modal-close:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.reports-modal-close svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Modal Body */
+.reports-modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.reports-column-info {
+  margin: 0 0 1.5rem 0;
+  padding: 1rem;
+  background-color: #e8f3ff;
+  border-radius: 8px;
+  color: #1e40af;
+  font-size: 0.9rem;
+  border-left: 4px solid #42a5f5;
+}
+
+/* Column Grid */
+.reports-column-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.reports-column-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.reports-column-option:hover {
+  border-color: #42a5f5;
+  background-color: #f8fafc;
+}
+
+.reports-column-option input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #42a5f5;
+}
+
+.reports-column-option input[type="checkbox"]:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.reports-column-option span {
+  font-size: 0.9rem;
+  color: #334155;
+  transition: color 0.2s;
+}
+
+.reports-column-option span.selected {
+  color: #42a5f5;
+  font-weight: 500;
+}
+
+.reports-column-option:has(input[type="checkbox"]:checked) {
+  border-color: #42a5f5;
+  background-color: #f0f9ff;
+}
+
+.reports-column-option:has(input[type="checkbox"]:disabled) {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Modal Footer */
+.reports-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-top: 1px solid #e2e8f0;
+  background-color: #f8fafc;
+}
+
+.reports-modal-cancel {
+  padding: 0.5rem 1.5rem;
+  border: 1px solid #e2e8f0;
+  background-color: white;
+  color: #64748b;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.reports-modal-cancel:hover {
+  background-color: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.reports-modal-export {
+  padding: 0.5rem 1.5rem;
+  background-color: #10b981;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.reports-modal-export:hover:not(:disabled) {
+  background-color: #059669;
+}
+
+.reports-modal-export:disabled {
+  background-color: #6b7280;
+  cursor: not-allowed;
 }
 
 /* Custom scrollbar for table */
@@ -452,3 +632,100 @@
 .reports-table-responsive::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .reports-controls {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  
+  .reports-date-selector {
+    flex-wrap: wrap;
+  }
+  
+  .reports-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 768px) {
+  .reports-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  .reports-controls {
+    width: 100%;
+  }
+  
+  .reports-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.5rem;
+  }
+  
+  .reports-search-container {
+    width: 100%;
+  }
+  
+  .reports-export-button {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .reports-date-selector {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  
+  .reports-date-range-container,
+  .reports-month-year-container {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+  
+  .reports-date-input,
+  .reports-month-select,
+  .reports-year-input {
+    width: 100%;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .reports-modal-overlay {
+    padding: 0.5rem;
+  }
+  
+  .reports-modal {
+    max-height: 90vh;
+  }
+  
+  .reports-modal-header,
+  .reports-modal-body,
+  .reports-modal-footer {
+    padding: 1rem;
+  }
+  
+  .reports-column-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .reports-modal-footer {
+    flex-direction: column;
+  }
+  
+  .reports-modal-cancel,
+  .reports-modal-export {
+    width: 100%;
+    justify-content: center;
+    display: flex;
+  }
+}
+

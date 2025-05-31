@@ -92,4 +92,18 @@ export const isAdmin = (): boolean => {
          sessionStorage.getItem('is_admin') === 'true';
 };
 
+// Language functions
+export const setLanguage = async (language: string): Promise<void> => {
+  try {
+    await api.post('/set-language/', { language });
+  } catch (error) {
+    console.error('Failed to update backend language:', error);
+  }
+};
+
+// Get current language from localStorage
+export const getCurrentLanguage = (): string => {
+  return localStorage.getItem('i18nextLng') || 'en';
+};
+
 export default api;
