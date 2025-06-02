@@ -205,6 +205,133 @@
   border-bottom-right-radius: 6px;
 }
 
+/* Month Dropdown Container for Reports */
+.reports-month-dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+/* Month Filter Button */
+.reports-month-filter-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: white;
+  color: #2196F3;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+  min-width: 120px;
+  justify-content: space-between;
+}
+
+.reports-month-filter-button:hover {
+  background-color: #f0f7ff;
+}
+
+/* Month Dropdown */
+.reports-month-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 15;
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  min-width: 120px;
+  margin-top: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+/* Month Dropdown Options */
+.reports-month-option {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  color: #64748b;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.reports-month-option:hover {
+  background-color: #f1f5f9;
+  color: #334155;
+}
+
+.reports-month-option.active {
+  background-color: #e8f3ff;
+  color: #2196F3;
+}
+
+.reports-month-option:first-child {
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+
+.reports-month-option:last-child {
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+
+/* Update existing month-year container */
+.reports-month-year-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Focus states for accessibility */
+.reports-month-filter-button:focus {
+  outline: 2px solid #2196F3;
+  outline-offset: 2px;
+}
+
+/* Dropdown arrow styling */
+.reports-month-filter-button .reports-dropdown-arrow {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s;
+}
+
+.reports-month-filter-button .reports-dropdown-arrow.open {
+  transform: rotate(180deg);
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+  .reports-month-dropdown {
+    left: 0;
+    right: 0;
+    width: auto;
+    min-width: auto;
+    z-index: 15;
+  }
+  
+  .reports-month-filter-button {
+    flex: 1;
+    min-width: 120px;
+    justify-content: center;
+  }
+  
+  .reports-month-year-container {
+    flex: 1;
+    min-width: 200px;
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+  
+  .reports-year-input {
+    flex: 1;
+    min-width: 80px;
+  }
+}
+
 /* Search Styles */
 .reports-search-container {
   position: relative;
@@ -680,20 +807,42 @@
   
   .reports-date-selector {
     width: 100%;
-    justify-content: flex-start;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
   }
   
-  .reports-date-range-container,
+  .reports-date-input-container,
+  .reports-date-range-container {
+    flex: 1;
+    min-width: 0;
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+  
+  .reports-date-input {
+    flex: 1;
+    min-width: 120px;
+  }
+  
   .reports-month-year-container {
-    flex-direction: column;
-    align-items: flex-start;
-    width: 100%;
+    flex: 1;
+    min-width: 200px;
+    flex-direction: row;
+    gap: 0.5rem;
   }
   
-  .reports-date-input,
   .reports-month-select,
   .reports-year-input {
-    width: 100%;
+    flex: 1;
+    min-width: 80px;
+  }
+  
+  .reports-date-filter-button {
+    flex-shrink: 0;
+    min-width: 120px;
+    justify-content: center;
   }
 }
 

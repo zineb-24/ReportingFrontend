@@ -1,25 +1,47 @@
-/* UserDashboard.css - with renamed classes */
+/* UserDashboard.css - Fully Responsive Version */
+
+/* Base Variables for Consistent Spacing */
+:root {
+  --header-height: 65px;
+  --sidebar-width: 200px;
+  --sidebar-collapsed-width: 70px;
+  --gym-selector-height: 50px;
+  --primary-color: #2196F3;
+  --secondary-color: #f52020;
+  --text-gray: #64748b;
+  --bg-light: #f4f4f4;
+  --border-radius: 8px;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Reset and Base Styles */
+* {
+  box-sizing: border-box;
+}
+
 .customer-layout {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
-/* Header Styles */
+/* Header Styles - Responsive */
 .customer-header {
-  background-color: #2196F3;
+  background-color: var(--primary-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem 1.5rem;
+  padding: 0.5rem 1rem;
   color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  z-index: 10;
+  box-shadow: var(--shadow-md);
+  z-index: 20;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  height: 65px;
+  height: var(--header-height);
 }
 
 .customer-logo-container {
@@ -31,6 +53,7 @@
 .customer-logo-image {
   height: 45px;
   width: auto;
+  max-width: 120px;
 }
 
 .customer-header-title {
@@ -41,61 +64,36 @@
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 60%;
 }
-
-/*.customer-profile {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-}
-
-.customer-profile-circle {
-  background-color: white;
-  border-radius: 50%;
-  padding: 0.35rem;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 0.5rem;
-}
-
-.customer-profile-icon {
-  color: #2196F3;
-  width: 24px;
-  height: 24px;
-}
-
-.customer-chevron-icon {
-  width: 20px;
-  height: 20px;
-  color: white;
-}*/
 
 /* Main Content Layout */
 .customer-content {
   display: flex;
   flex: 1;
-  margin-top: 65px; /* Match header height */
-  height: calc(100vh - 65px);
-  position: relative; /* Add this for positioning the gym selector */
+  margin-top: var(--header-height);
+  min-height: calc(100vh - var(--header-height));
+  position: relative;
 }
 
-/* Sidebar Styles */
+/* Sidebar Styles - Responsive */
 .customer-sidebar {
-  width: 200px;
+  width: var(--sidebar-width);
   background-color: white;
   box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   position: fixed;
-  top: 65px; /* Position below header */
+  top: var(--header-height);
   left: 0;
   bottom: 0;
-  z-index: 10;
+  z-index: 15;
   overflow: hidden;
+  transition: width 0.3s ease, transform 0.3s ease;
 }
 
 .customer-sidebar-nav {
@@ -118,7 +116,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #64748b;
+  color: var(--text-gray);
   cursor: pointer;
   transition: background-color 0.2s, color 0.2s;
   position: relative;
@@ -130,16 +128,17 @@
   gap: 1rem;
   padding: 0.85rem 1.5rem;
   width: 90%;
-  border-radius: 8px;
+  border-radius: var(--border-radius);
+  transition: all 0.2s ease;
 }
 
 .customer-sidebar-nav li:hover > div {
   background-color: #e8f3ff;
-  color: #2196F3;
+  color: var(--primary-color);
 }
 
 .customer-sidebar-nav li.active > div {
-  color: #2196F3;
+  color: var(--primary-color);
   background-color: #c9e6fd;
   font-weight: 500;
 }
@@ -152,23 +151,20 @@
 
 .customer-sidebar-logout {
   width: 90%;
-  margin: 1rem auto;
+  margin: 1rem auto 2rem;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding-left: 1.75rem;
+  padding: 0.75rem 1.75rem;
   gap: 1rem;
   background-color: #ffc9cf;
-  color: #f52020;
+  color: var(--secondary-color);
   border: none;
-  border-radius: 8px;
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
+  border-radius: var(--border-radius);
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s;
-  margin-bottom: 2rem;
 }
 
 .customer-sidebar-logout:hover {
@@ -178,40 +174,25 @@
 .customer-logout-icon {
   width: 20px;
   height: 20px;
+  flex-shrink: 0;
+  min-width: 20px;
+  min-height: 20px;
 }
 
-/* Main Content Area */
+/* Gym Selector - Responsive */
 .customer-gym-selector {
   display: flex;
   align-items: center;
   background-color: white;
   padding: 0.5rem 1rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
   position: fixed;
-  top: 65px;
-  left: 200px;
+  top: var(--header-height);
+  left: var(--sidebar-width);
   right: 0;
-  z-index: 6;
-  margin: 0;
-  border-radius: 0;
-  height: 50px;
-}
-
-.customer-welcome-text {
-  font-weight: 400; /* Lighter font weight */
-}
-
-/* Additional padding for the main content to account for the gym selector */
-.customer-main-content {
-  flex: 1;
-  padding: 1.5rem 2.5rem;
-  background-color: #f4f4f4;
-  margin-left: 200px; /* Adjust for sidebar width */
-  margin-top: 60px; /* Add margin-top equal to gym selector height */
-  min-height: calc(100vh - 65px - 50px); /* Subtract header and gym selector height */
-  overflow-y: auto;
-  width: calc(100% - 200px); /* Ensure content width doesn't extend past right edge */
-  box-sizing: border-box;
+  z-index: 10;
+  height: var(--gym-selector-height);
+  transition: left 0.3s ease;
 }
 
 .customer-gym-tabs {
@@ -221,50 +202,49 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
   padding: 0;
-  justify-content: center; /* Center the tabs */
+  justify-content: space-evenly;
   width: 100%;
-  gap: 10px; /* Space between tabs */
+  gap: 0;
+  scroll-behavior: smooth;
 }
 
 .customer-gym-tabs::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+  display: none;
 }
 
 .customer-gym-tab {
-  padding: 0.25rem 1rem;
-  margin-bottom: 0px; /* This is the key change - pull tab down to overlap container border */
+  padding: 0.4rem 1.5rem; /* Increased horizontal padding */
   white-space: nowrap;
-  color: #64748b;
+  color: var(--text-gray);
   cursor: pointer;
-  transition: color 0.2s;
+  transition: all 0.2s ease;
   border-bottom: 2px solid transparent;
   font-weight: 500;
-  flex: 1; /* Make each tab take equal space */
-  text-align: center; /* Center the text */
+  text-align: center;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
-  border-radius: 8px; /* Add rounded corners */
-  margin: 0 150px; /* Add some space between tabs */
+  border-radius: var(--border-radius);
+  min-width: 120px;
+  flex: 1; /* NEW: Make tabs grow to fill space */
+  max-width: 300px; /* NEW: Prevent oversizing */
 }
 
 .customer-gym-tab:hover {
   color: #ec5555;
-  background-color: rgba(236, 85, 85, 0.1); /* Light red background on hover */
+  background-color: rgba(236, 85, 85, 0.1);
 }
-/*#ffafaf
-#f26666*/
+
 .customer-gym-tab.active {
-  color: #f52020; /* White text */
-  background-color: #ffc9cf; /* Pink/red background */
-  border-bottom: none; /* Remove the bottom border */
+  color: var(--secondary-color);
+  background-color: #ffc9cf;
 }
 
 .customer-nav-arrow {
-  background: none;
-  border: none;
-  color: #64748b;
+  background: white;
+  border: 1px solid #e2e8f0;
+  color: var(--text-gray);
   cursor: pointer;
   width: 32px;
   height: 32px;
@@ -272,18 +252,15 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  transition: background-color 0.2s;
-  z-index: 6; /* Ensure they're above other elements */
+  transition: all 0.2s ease;
+  z-index: 11;
   flex-shrink: 0;
-}
-
-.customer-nav-arrow.visible {
-  display: flex; /* Show when this class is applied */
+  box-shadow: var(--shadow-sm);
 }
 
 .customer-nav-arrow:hover {
   background-color: #f0f7ff;
-  color: #2196F3;
+  color: var(--primary-color);
 }
 
 .customer-nav-arrow svg {
@@ -291,13 +268,30 @@
   height: 20px;
 }
 
+/* Main Content Area */
+.customer-main-content {
+  flex: 1;
+  padding: 1.5rem;
+  background-color: var(--bg-light);
+  margin-left: var(--sidebar-width);
+  margin-top: var(--gym-selector-height);
+  min-height: calc(100vh - var(--header-height) - var(--gym-selector-height));
+  overflow-y: auto;
+  transition: margin-left 0.3s ease;
+}
+
+.customer-welcome-text {
+  font-weight: 400;
+}
+
 /* Welcome Section and Date Selector */
 .customer-welcome-section {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 1.5rem;
-  padding: 0 0.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .customer-welcome-section h2 {
@@ -305,91 +299,195 @@
   font-weight: 600;
   color: #334155;
   margin: 0;
+  flex-shrink: 0;
 }
 
 .customer-date-selector {
   display: flex;
   align-items: center;
   gap: 1rem;
-  flex-wrap: wrap; /*update*/
+  flex-wrap: wrap;
+  min-width: 0;
 }
 
-.customer-date-input-container, .customer-date-range-container {
+.customer-date-input-container,
+.customer-date-range-container {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  flex-wrap: wrap;
 }
 
 .customer-date-input-wrapper {
   position: relative;
   display: flex;
   align-items: center;
-  width: 100%;
+  min-width: 140px;
 }
 
 .customer-date-input {
   padding: 0.5rem 0.75rem;
-  padding-right: 2.5rem;
   border: 1px solid #e2e8f0;
   border-radius: 6px;
   font-size: 0.875rem;
   background-color: white;
   text-align: center;
+  width: 100%;
+  min-width: 140px;
 }
-
-::-webkit-calendar-picker-indicator {
-  opacity: 1;
-  cursor: pointer;
-  position: absolute;
-  right: 20px;
-}
-
-/* Date range specific styling */
-.customer-date-range-container {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-
-/*.customer-date-icon {
-  position: absolute;
-  right: 0.75rem;
-  width: 18px;
-  height: 18px;
-  color: #64748b;
-  pointer-events: none;
-}*/
 
 .customer-date-separator {
-  color: #64748b;
+  color: var(--text-gray);
   font-weight: 500;
+  white-space: nowrap;
 }
 
-.customer-date-toggle-button {
+/* Month Dropdown Container */
+.customer-month-dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+/* Month Filter Button - Same styling as date filter button */
+.customer-month-filter-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
   background-color: #e8f3ff;
-  color: #2196F3;
+  color: var(--primary-color);
   border: 1px solid #c9e6fd;
   border-radius: 6px;
-  padding: 0.5rem 1.25rem;
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s;
+  white-space: nowrap;
+  min-width: 120px;
+  justify-content: space-between;
 }
 
-.customer-date-toggle-button:hover {
+.customer-month-filter-button:hover {
   background-color: #d1e9ff;
 }
 
-/* Stats Carousel Styles */
+/* Month Dropdown */
+.customer-month-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 9;
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  box-shadow: var(--shadow-md);
+  min-width: 120px;
+  margin-top: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+/* Month Dropdown Options */
+.customer-month-option {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  color: var(--text-gray);
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.customer-month-option:hover {
+  background-color: #f1f5f9;
+  color: #334155;
+}
+
+.customer-month-option.active {
+  background-color: #e8f3ff;
+  color: var(--primary-color);
+}
+
+.customer-month-option:first-child {
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+
+.customer-month-option:last-child {
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+
+/* Updated Month/Year Container */
+.customer-month-year-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* Year input remains the same */
+.customer-year-input {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  background-color: white;
+  width: 80px;
+  text-align: center;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+  .customer-month-dropdown {
+    left: 0;
+    right: 0;
+    width: auto;
+    min-width: auto;
+  }
+  
+  .customer-month-filter-button {
+    flex: 1;
+    min-width: 120px;
+    justify-content: center;
+  }
+  
+  .customer-month-year-container {
+    flex: 1;
+    min-width: 200px;
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+  
+  .customer-year-input {
+    flex: 1;
+    min-width: 80px;
+  }
+}
+
+/* Focus states for accessibility */
+.customer-month-filter-button:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* Dropdown arrow styling */
+.customer-month-filter-button .dropdown-arrow {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s;
+}
+
+.customer-month-filter-button .dropdown-arrow.open {
+  transform: rotate(180deg);
+}
+
+/* Stats Carousel - Responsive */
 .customer-stats-carousel {
   margin-bottom: 2rem;
 }
 
 .customer-stats-container {
   position: relative;
-  padding: 0 40px; /* Add padding for the arrows */
+  padding: 0 40px;
 }
 
 .customer-stats-scroll-area {
@@ -426,18 +524,24 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.75rem;
 }
 
 .customer-stat-info {
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  flex: 1;
 }
 
 .customer-stat-title {
   font-size: 1rem;
-  color: #64748b;
+  color: var(--text-gray);
   margin: 0 0 0.5rem;
   font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .customer-stat-value {
@@ -445,33 +549,31 @@
   font-weight: 600;
   color: #0f172a;
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-
-.customer-revenue-card .customer-stat-content {
-  justify-content: space-between;
-  gap: 0.75rem; /* Add more gap between text and icon */
-}
-
 
 /* Stats Icons */
 .customer-stat-icon {
-  width: 65px;
-  height: 65px;
+  width: 55px;
+  height: 55px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .customer-stat-icon-svg {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
 }
 
+/* Icon color themes */
 .customer-revenue-icon {
   background-color: #e0f2ff;
 }
-
 .customer-revenue-icon .customer-stat-icon-svg {
   color: #3b82f6;
 }
@@ -479,7 +581,6 @@
 .customer-payment-icon {
   background-color: #ffeae8;
 }
-
 .customer-payment-icon .customer-stat-icon-svg {
   color: #f15353;
 }
@@ -487,7 +588,6 @@
 .customer-client-icon {
   background-color: #e9f9f0;
 }
-
 .customer-client-icon .customer-stat-icon-svg {
   color: #10b981;
 }
@@ -495,7 +595,6 @@
 .customer-subscription-icon {
   background-color: #f3e8ff;
 }
-
 .customer-subscription-icon .customer-stat-icon-svg {
   color: #8b5cf6;
 }
@@ -503,7 +602,6 @@
 .customer-expired-icon {
   background-color: #ffeae8;
 }
-
 .customer-expired-icon .customer-stat-icon-svg {
   color: #ef4444;
 }
@@ -511,7 +609,6 @@
 .customer-active-icon {
   background-color: #ecfdf5;
 }
-
 .customer-active-icon .customer-stat-icon-svg {
   color: #10b981;
 }
@@ -523,7 +620,7 @@
   transform: translateY(-50%);
   background-color: white;
   border: 1px solid #e2e8f0;
-  color: #64748b;
+  color: var(--text-gray);
   width: 36px;
   height: 36px;
   border-radius: 50%;
@@ -532,13 +629,13 @@
   justify-content: center;
   cursor: pointer;
   z-index: 2;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.2s, color 0.2s;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
 }
 
 .customer-stats-nav-arrow:hover {
   background-color: #f0f7ff;
-  color: #2196F3;
+  color: var(--primary-color);
 }
 
 .customer-stats-nav-arrow svg {
@@ -554,22 +651,32 @@
   right: 0px;
 }
 
-/* Dashboard Content Area for Future Components */
-/*.customer-dashboard-content {
-  background-color: white;
-  border-radius: 10px;
-  padding: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  min-height: 300px;
-}*/
+/* Dashboard Content Area */
+.customer-dashboard-content {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: 1fr;
+}
 
-.customer-select-gym-message, .customer-loading-data {
+/* Loading and Message States */
+.customer-select-gym-message,
+.customer-loading-data {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 200px;
-  color: #64748b;
+  color: var(--text-gray);
   font-style: italic;
+  text-align: center;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 1.1rem;
+  color: var(--text-gray);
 }
 
 /* Tab Content */
@@ -577,15 +684,15 @@
   background-color: white;
   border-radius: 10px;
   padding: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
 }
 
-/* Message for exceeded time period */
+/* Range Limit Message */
 .customer-range-limit-message {
   display: flex;
   align-items: center;
   background-color: #e0f2ff;
-  border-left: 3px solid #2196F3;
+  border-left: 3px solid var(--primary-color);
   padding: 0.75rem 1rem;
   margin: 0.5rem 0 1.5rem;
   border-radius: 4px;
@@ -594,7 +701,7 @@
 .customer-range-limit-message .info-icon {
   width: 20px;
   height: 20px;
-  color: #2196F3;
+  color: var(--primary-color);
   margin-right: 0.75rem;
   flex-shrink: 0;
 }
@@ -617,13 +724,14 @@
   gap: 0.5rem;
   padding: 0.5rem 1rem;
   background-color: #e8f3ff;
-  color: #2196F3;
+  color: var(--primary-color);
   border: 1px solid #c9e6fd;
   border-radius: 6px;
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s;
+  white-space: nowrap;
 }
 
 .customer-date-filter-button:hover {
@@ -636,19 +744,15 @@
   transition: transform 0.2s;
 }
 
-.customer-date-filter-button[aria-expanded="true"] .dropdown-arrow {
-  transform: rotate(180deg);
-}
-
 .customer-date-dropdown {
   position: absolute;
   top: 100%;
   left: 0;
-  z-index: 10;
+  z-index: 20;
   background-color: white;
   border: 1px solid #e2e8f0;
   border-radius: 6px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   min-width: 120px;
   margin-top: 4px;
 }
@@ -656,9 +760,9 @@
 .dropdown-option {
   padding: 0.75rem 1rem;
   cursor: pointer;
-  color: #64748b;
+  color: var(--text-gray);
   font-weight: 500;
-  transition: background-color 0.2s, color 0.2s;
+  transition: all 0.2s ease;
 }
 
 .dropdown-option:hover {
@@ -668,7 +772,7 @@
 
 .dropdown-option.active {
   background-color: #e8f3ff;
-  color: #2196F3;
+  color: var(--primary-color);
 }
 
 .dropdown-option:first-child {
@@ -686,6 +790,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  flex-wrap: wrap;
 }
 
 .customer-month-select,
@@ -715,74 +820,38 @@
   width: 100px;
 }
 
-/* Go to Reports Button */
-.customer-go-to-reports-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background-color: #e8f3ff;
-  color: #2196F3;
-  border: 1px solid #c9e6fd;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
-  height: 38px; /* Match the height of date inputs */
-  white-space: nowrap;
-  font-size: 0.875rem;
-  font-weight: 450;
-}
-
-.customer-go-to-reports-button:hover {
-  background-color: #d1e9ff;
-  color: #1976d2;
-}
-
-.customer-reports-icon {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-}
-
-.customer-reports-button-text {
-  color: inherit;
-}
-
-/* Sidebar Toggle Button - Centered */
+/* Sidebar Toggle Button */
 .customer-sidebar-toggle {
   position: absolute;
   right: 0px;
-  top: 50%;  /* Changed from 20px to 50% */
-  transform: translateY(-50%);  /* Added to center vertically */
+  top: 50%;
+  transform: translateY(-50%);
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background-color: none;
+  background-color: transparent;
   border: none;
-  box-shadow: none;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 11;
+  z-index: 16;
   transition: all 0.3s ease;
 }
 
 .customer-sidebar-toggle:hover {
   background-color: rgba(240, 247, 255, 0.8);
-  border-radius: 20px;
-  transform: translateY(-50%) scale(1.05);  /* Updated hover transform */
+  transform: translateY(-50%) scale(1.05);
 }
 
 .customer-sidebar-toggle:hover .toggle-icon {
-  color: #2196F3;  /* Change color on hover */
+  color: var(--primary-color);
 }
 
 .toggle-icon {
   width: 16px;
   height: 16px;
-  color: #64748b;
+  color: var(--text-gray);
   transition: transform 0.3s ease;
 }
 
@@ -791,12 +860,8 @@
 }
 
 /* Sidebar Collapsed State */
-.customer-sidebar {
-  transition: width 0.3s ease;
-}
-
 .customer-sidebar.collapsed {
-  width: 70px;
+  width: var(--sidebar-collapsed-width);
 }
 
 .customer-sidebar.collapsed .menu-text {
@@ -821,18 +886,16 @@
   display: none;
 }
 
-/* Adjust main content when sidebar is collapsed */
+/* Adjust content when sidebar is collapsed */
 .customer-gym-selector.sidebar-collapsed {
-  left: 70px;
-  width: calc(100% - 70px);
+  left: var(--sidebar-collapsed-width);
 }
 
 .customer-main-content.sidebar-collapsed {
-  margin-left: 70px;
-  width: calc(100% - 70px);
+  margin-left: var(--sidebar-collapsed-width);
 }
 
-/* Tooltip on hover for collapsed sidebar */
+/* Tooltip for collapsed sidebar */
 .customer-sidebar.collapsed .customer-sidebar-nav li {
   position: relative;
 }
@@ -874,49 +937,10 @@
   transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-/* Mobile adjustments */
-@media (max-width: 768px) {
-  .customer-sidebar-toggle {
-    display: none;
-  }
-  
-  .customer-sidebar {
-    width: 100% !important;
-  }
-  
-  .customer-sidebar.collapsed {
-    width: 100% !important;
-  }
-  
-  .customer-sidebar.collapsed .menu-text {
-    opacity: 1;
-    visibility: visible;
-    position: static;
-  }
-}
-
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
-  .customer-sidebar {
-    position: static;
-    width: 100%;
-    height: auto;
-  }
-  
-  .customer-nav-arrow {
-    display: none;
-  }
-  
-  .customer-gym-tabs.scrollable + .customer-nav-arrow {
-    display: flex;
-  }
-
+/* Tablet Styles (768px - 1024px) */
+@media (max-width: 1024px) {
   .customer-main-content {
-    margin-left: 0;
-  }
-  
-  .customer-content {
-    flex-direction: column;
+    padding: 1rem;
   }
   
   .customer-welcome-section {
@@ -927,44 +951,406 @@
   
   .customer-date-selector {
     width: 100%;
+    flex-wrap: wrap;
   }
   
-  .customer-date-range-container {
+  .customer-stat-card {
+    min-width: 200px;
+  }
+  
+  .customer-stat-value {
+    font-size: 1.5rem;
+  }
+  
+  .customer-stats-container {
+    padding: 0 30px;
+  }
+}
+
+/* Mobile Styles (max-width: 768px) */
+@media (max-width: 768px) {
+  :root {
+    --sidebar-width: 250px;
+    --gym-selector-height: 60px;
+  }
+  
+  /* FIXED: Ensure header stays sticky on mobile */
+  .customer-header {
+    padding: 0.5rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 20;
+  }
+  
+  .customer-header-title {
+  display: none !important;
+}
+  
+  .customer-logo-image {
+    height: 35px;
+  }
+  
+  /* Mobile menu button */
+  .mobile-menu-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+    margin-right: 0.5rem;
+  }
+  
+  .mobile-menu-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .mobile-menu-button svg {
+    width: 24px;
+    height: 24px;
+  }
+  
+  /* Mobile sidebar overlay */
+  .customer-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--sidebar-width);
+    height: 100vh;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+    background-color: white;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .customer-sidebar.mobile-open {
+    transform: translateX(0);
+  }
+  
+  /* Mobile overlay backdrop */
+  .mobile-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+  
+  .mobile-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  /* Hide desktop sidebar toggle on mobile */
+  .customer-sidebar-toggle {
+    display: none;
+  }
+  
+  /* Mobile sidebar close button */
+  .mobile-sidebar-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 32px;
+    height: 32px;
+    background: none;
+    border: none;
+    color: var(--text-gray);
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+  }
+  
+  .mobile-sidebar-close:hover {
+    background-color: #f1f5f9;
+  }
+  
+  .mobile-sidebar-close svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  /* FIXED: Mobile gym selector - stays sticky below header */
+  .customer-gym-selector {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: var(--gym-selector-height);
+    padding: 0.75rem 0.5rem;
+    z-index: 10;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .customer-gym-tabs {
+    gap: 0.5rem;
+  }
+  
+  .customer-gym-tab {
+    min-width: 100px;
+    padding: 0.75rem 0.5rem;
+    font-size: 0.875rem;
+  }
+  
+  /* Show navigation arrows on mobile when needed */
+  .customer-nav-arrow {
+    display: flex;
+    width: 28px;
+    height: 28px;
+  }
+  
+  /* FIXED: Main content adjustments - account for both header and gym selector */
+  .customer-main-content {
+    margin-left: 0 !important;
+    margin-top: 70px;
+    padding: 1rem 0.75rem;
+    width: 100%;
+    min-height: calc(100vh - var(--header-height) - var(--gym-selector-height));
+  }
+  
+  /* FIXED: Ensure gym selector doesn't have sidebar spacing on mobile */
+  .customer-gym-selector.sidebar-collapsed {
+    left: 0;
+    width: 100%;
+  }
+  
+  /* Welcome section mobile */
+  .customer-welcome-section {
     flex-direction: column;
     align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .customer-welcome-section h2 {
+    font-size: 1.25rem;
+  }
+  
+  /* Date selector mobile */
+  .customer-date-selector {
     width: 100%;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  
+  .customer-date-input-container,
+  .customer-date-range-container {
+    flex: 1;
+    min-width: 0;
+    flex-direction: row;
+    gap: 0.5rem;
   }
   
   .customer-date-input-wrapper {
-    width: 100%;
+    flex: 1;
+    min-width: 120px;
   }
   
   .customer-date-input {
     width: 100%;
-  }
-
-    .customer-date-selector {
-    flex-direction: column;
-    align-items: flex-start;
-    width: 100%;
+    min-width: auto;
   }
   
-  .customer-month-year-container,
-  .customer-date-range-container {
-    width: 100%;
-  }
-  
-  .customer-month-select {
+  .customer-month-year-container {
     flex: 1;
-    min-width: 0;
+    min-width: 200px;
+    flex-direction: row;
+    gap: 0.5rem;
   }
-
-   .customer-reports-button-text {
+  
+  .customer-month-select,
+  .customer-year-input {
+    flex: 1;
+    min-width: 80px;
+  }
+  
+  .customer-date-filter-button {
+    flex-shrink: 0;
+    min-width: 120px;
+    justify-content: center;
+  }
+  
+  /* Stats carousel mobile */
+  .customer-stats-container {
+    padding: 0 20px;
+  }
+  
+  .customer-stat-card {
+    min-width: 180px;
+    padding: 0.875rem;
+  }
+  
+  .customer-stat-title {
+    font-size: 0.875rem;
+  }
+  
+  .customer-stat-value {
+    font-size: 1.25rem;
+  }
+  
+  .customer-stat-icon {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .customer-stat-icon-svg {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .customer-stats-nav-arrow {
     display: none;
   }
   
-  .customer-go-to-reports-button {
-    min-width: 40px;
+  /* Dashboard content mobile */
+  .customer-dashboard-content {
+    gap: 1rem;
+  }
+  
+  /* Dropdown mobile adjustments */
+  .customer-date-dropdown {
+    left: 0;
+    right: 0;
+    width: auto;
+    min-width: auto;
+  }
+}
+
+/* Extra small mobile (max-width: 480px) */
+@media (max-width: 480px) {
+  .customer-header {
     padding: 0.5rem;
+  }
+  
+  .customer-header-title {
+    font-size: 1rem;
+    max-width: 60%;
+  }
+  
+  .customer-logo-image {
+    height: 30px;
+  }
+  
+  .customer-main-content {
+    padding: 0.75rem 0.5rem;
+  }
+  
+  .customer-welcome-section h2 {
+    font-size: 1.125rem;
+  }
+  
+  .customer-stat-card {
+    min-width: 160px;
+    padding: 0.75rem;
+  }
+  
+  .customer-stat-title {
+    font-size: 0.8rem;
+  }
+  
+  .customer-stat-value {
+    font-size: 1.125rem;
+  }
+  
+  .customer-gym-tab {
+    min-width: 80px;
+    padding: 0.5rem 0.25rem;
+    font-size: 0.8rem;
+  }
+  
+  .customer-stats-container {
+    padding: 0;
+  }
+}
+
+/* Landscape mobile orientation */
+@media (max-width: 768px) and (orientation: landscape) {
+  .customer-welcome-section {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  
+  .customer-date-selector {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .customer-date-input-container,
+  .customer-date-range-container {
+    flex-direction: row;
+    width: auto;
+  }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .customer-stat-icon-svg {
+    transform: translateZ(0);
+  }
+}
+
+/* Focus states for accessibility */
+.customer-date-input:focus,
+.customer-month-select:focus,
+.customer-year-input:focus,
+.customer-date-filter-button:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* Improved touch targets for mobile */
+@media (max-width: 768px) {
+  .customer-gym-tab,
+  .customer-date-filter-button,
+  .customer-sidebar-nav li > div,
+  .customer-sidebar-logout {
+    min-height: 44px;
+  }
+}
+
+/* Print styles */
+@media print {
+  .customer-sidebar,
+  .customer-gym-selector,
+  .customer-stats-nav-arrow,
+  .customer-nav-arrow {
+    display: none !important;
+  }
+  
+  .customer-main-content {
+    margin-left: 0 !important;
+    margin-top: 0 !important;
+    padding: 1rem !important;
+  }
+  
+  .customer-layout {
+    min-height: auto;
+  }
+  
+  .customer-stat-card {
+    break-inside: avoid;
+    margin-bottom: 1rem;
   }
 }

@@ -16,23 +16,52 @@ interface RevenueChartProps {
   isLoading: boolean;
 }
 
-// Helper function for currency formatting
-const formatCurrency = (amount: number): string => {
-    return new Intl.NumberFormat('fr-MA', {
-      style: 'decimal',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    }).format(amount) + ' MAD';
-  };
+// Custom hook for responsive breakpoints
+const useResponsive = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(true);
 
-// Custom tooltip component
+  useEffect(() => {
+    const checkDevice = () => {
+      const width = window.innerWidth;
+      setIsMobile(width <= 768);
+      setIsTablet(width > 768 && width <= 1024);
+      setIsDesktop(width > 1024);
+    };
+
+    checkDevice();
+    window.addEventListener('resize', checkDevice);
+    return () => window.removeEventListener('resize', checkDevice);
+  }, []);
+
+  return { isMobile, isTablet, isDesktop };
+};
+
+// Helper function for responsive currency formatting
+const formatCurrency = (amount: number, isMobile: boolean = false): string => {
+  if (isMobile && amount >= 1000000) {
+    return (amount / 1000000).toFixed(1) + 'M MAD';
+  } else if (isMobile && amount >= 1000) {
+    return (amount / 1000).toFixed(1) + 'K MAD';
+  }
+  return new Intl.NumberFormat('fr-MA', {
+    style: 'decimal',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(amount) + ' MAD';
+};
+
+// Custom responsive tooltip component
 const CustomTooltip: React.FC<any> = ({ active, payload, label }) => {
+  const { isMobile } = useResponsive();
+  
   if (active && payload && payload.length) {
     return (
       <div className="chart-tooltip">
         <p className="chart-tooltip-label">{label}</p>
         <p className="chart-tooltip-value">
-          {formatCurrency(payload[0].value)}
+          {formatCurrency(payload[0].value, isMobile)}
         </p>
       </div>
     );
@@ -42,6 +71,7 @@ const CustomTooltip: React.FC<any> = ({ active, payload, label }) => {
 
 const RevenueChart: React.FC<RevenueChartProps> = ({ data, selectedDate, dateMode, isLoading }) => {
   const { t } = useTranslation();
+  const { isMobile, isTablet, isDesktop } = useResponsive();
   
   // This will completely unmount and remount the component
   const [shouldRender, setShouldRender] = useState(true);
@@ -81,6 +111,37 @@ const RevenueChart: React.FC<RevenueChartProps> = ({ data, selectedDate, dateMod
     return { ...item, color };
   });
 
+  // Responsive chart dimensions and settings
+  const getChartConfig = () => {
+    if (isMobile) {
+      return {
+        height: 250,
+        margin: { top: 10, right: 15, left: 10, bottom: 15 },
+        barCategoryGap: 8,
+        tickCount: 4,
+        fontSize: 12
+      };
+    }
+    if (isTablet) {
+      return {
+        height: 350,
+        margin: { top: 15, right: 20, left: 15, bottom: 20 },
+        barCategoryGap: 10,
+        tickCount: 5,
+        fontSize: 14
+      };
+    }
+    return {
+      height: 400,
+      margin: { top: 20, right: 30, left: 20, bottom: 20 },
+      barCategoryGap: 10,
+      tickCount: 5,
+      fontSize: 16
+    };
+  };
+
+  const chartConfig = getChartConfig();
+
   if (isLoading) {
     return (
       <div className="revenue-chart-container">
@@ -103,30 +164,37 @@ const RevenueChart: React.FC<RevenueChartProps> = ({ data, selectedDate, dateMod
     );
   }
 
-  // Calculate custom ticks for X axis
+  // Calculate responsive ticks for X axis
   const calculateTicks = () => {
-    // For yearly data (12 months), show all month labels
+    // For yearly data (12 months), show all month labels on desktop/tablet
     if (data.length === 12) {
+      if (isMobile) {
+        // Show every 2nd month on mobile
+        return data.filter((_, index) => index % 2 === 0).map(item => item.label);
+      }
       return data.map(item => item.label);
     }
     
-    // For data with 8 or fewer points, show all labels
-    if (data.length <= 8) {
+    // Responsive tick limits based on screen size
+    const maxTicks = isMobile ? 4 : isTablet ? 6 : 8;
+    
+    // For data with few points, show all labels
+    if (data.length <= maxTicks) {
       return data.map(item => item.label);
     } else {
-      // For more than 8 points (like daily data), limit to 8 evenly spaced ticks
+      // For more points, limit to evenly spaced ticks
       const tickIndices = [];
       // Always include first and last dates
       tickIndices.push(0);
       tickIndices.push(data.length - 1);
       
-      // Calculate how many more ticks to show (max 6 more to reach 8 total)
-      const remainingTicks = 6;
+      // Calculate how many more ticks to show
+      const remainingTicks = maxTicks - 2;
       const step = Math.max(1, Math.floor((data.length - 2) / remainingTicks));
       
       // Add evenly spaced ticks between start and end
       for (let i = step; i < data.length - 1; i += step) {
-        if (tickIndices.length < 8) {
+        if (tickIndices.length < maxTicks) {
           tickIndices.push(i);
         }
       }
@@ -139,32 +207,60 @@ const RevenueChart: React.FC<RevenueChartProps> = ({ data, selectedDate, dateMod
     }
   };
 
+  // Responsive Y-axis formatter
+  const formatYAxisTick = (value: number) => {
+    if (value === 0) return '0';
+    
+    if (isMobile) {
+      if (value >= 1000000) {
+        return `${(value / 1000000).toFixed(1)}M`;
+      } else if (value >= 1000) {
+        return `${(value / 1000).toFixed(0)}K`;
+      }
+      return value.toString();
+    }
+    
+    return value >= 1000 ? `${value / 1000}k` : value.toString();
+  };
+
   return (
     <div className="revenue-chart-container">
       <h3 className="revenue-title">{t('revenue.totalRevenue')}</h3>
       <div className="chart-container">
         {shouldRender && (
-          <div key={chartKey} style={{ width: '100%', height: '300px' }}>
+          <div key={chartKey} style={{ width: '100%', height: `${chartConfig.height}px` }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart 
                 data={coloredData} 
-                margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-                barCategoryGap={10}
+                margin={chartConfig.margin}
+                barCategoryGap={chartConfig.barCategoryGap}
                 barGap={0}
               >
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <CartesianGrid 
+                  strokeDasharray="3 3" 
+                  vertical={false}
+                  stroke="#e2e8f0"
+                />
                 <XAxis
                   dataKey="label"
                   axisLine={false}
                   tickLine={false}
-                  ticks={calculateTicks()}
+                  ticks={isMobile ? [] : calculateTicks()}
                   tickFormatter={(value) => value}
+                  fontSize={chartConfig.fontSize}
+                  angle={isMobile ? -45 : 0}
+                  textAnchor={isMobile ? "end" : "middle"}
+                  height={isMobile ? 20 : 30}
+                  interval={0}
+                  tick={!isMobile} 
                 />
                 <YAxis 
                   axisLine={false}
                   tickLine={false}
-                  tickCount={5}
-                  tickFormatter={(value) => value === 0 ? '0' : `${value / 1000}k`}
+                  tickCount={chartConfig.tickCount}
+                  tickFormatter={formatYAxisTick}
+                  fontSize={chartConfig.fontSize}
+                  width={isMobile ? 40 : 60}
                 />
                 <Tooltip 
                   content={<CustomTooltip />}
@@ -177,13 +273,14 @@ const RevenueChart: React.FC<RevenueChartProps> = ({ data, selectedDate, dateMod
                   fillOpacity={1}
                   stroke="#63B3ED"
                   strokeWidth={0}
+                  maxBarSize={isMobile ? 40 : isTablet ? 50 : 60}
                 />
               </BarChart>
             </ResponsiveContainer>
           </div>
         )}
         {!shouldRender && (
-          <div className="chart-loading" style={{ height: '300px' }}>
+          <div className="chart-loading" style={{ height: `${chartConfig.height}px` }}>
             <p>{t('revenue.updatingChart')}</p>
           </div>
         )}

@@ -80,11 +80,17 @@
   .logo-container {
     text-align: center;
     margin-bottom: 2rem;
+    width: 100%; /* Ensure full width */
+    display: flex;
+    justify-content: center; /* Flexbox centering as backup */
+    align-items: center;
   }
   
   .logo {
     max-width: 180px;
     height: auto;
+    display: block; /* Remove any inline spacing issues */
+    margin: 0 auto; /* Additional centering */
   }
   
   .login-form {
@@ -234,12 +240,56 @@
   }
   
   /* Responsive adjustments */
-  @media (max-width: 1024px) {
-    .login-right-panel {
-      width: 50%;
+  
+  /* Large tablets and small desktops */
+  @media (max-width: 1200px) {
+    .dashboard-illustration {
+      width: 550px;
+      height: 450px;
+      top: 60px;
+    }
+    
+    .login-left-panel h1 {
+      margin-top: 400px;
+      font-size: 2.2rem;
+    }
+    
+    .login-left-panel p {
+      font-size: 1.1rem;
     }
   }
   
+  @media (max-width: 1024px) {
+    .login-right-panel {
+      width: 45%;
+    }
+    
+    .dashboard-illustration {
+      width: 500px;
+      height: 400px;
+      top: 50px;
+    }
+    
+    .login-left-panel h1 {
+      margin-top: 350px;
+      font-size: 2rem;
+    }
+    
+    .login-left-panel p {
+      font-size: 1rem;
+      padding: 0 20px;
+    }
+    
+    .login-form-container {
+      max-width: 350px;
+    }
+    
+    .logo {
+      max-width: 160px;
+    }
+  }
+  
+  /* Tablets */
   @media (max-width: 768px) {
     .login-page {
       flex-direction: column;
@@ -247,26 +297,278 @@
     
     .login-left-panel {
       flex: none;
-      height: 30vh;
-      padding: 1rem;
+      height: 50vh;
+      min-height: 400px;
+      padding: 1.5rem;
+      justify-content: center;
+      align-items: center;
     }
     
     .dashboard-illustration {
-      width: 300px;
-      height: 200px;
-      margin-bottom: 1rem;
+      width: 320px;
+      height: 260px;
+      position: relative;
+      top: 0;
+      left: 0;
+      transform: none;
+      margin-bottom: 1.5rem;
     }
     
     .login-left-panel h1 {
+      margin-top: 0;
       font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+      padding: 0 20px;
     }
     
     .login-left-panel p {
       font-size: 1rem;
+      max-width: 90%;
+      padding: 0 20px;
+      margin-bottom: 0;
     }
     
     .login-right-panel {
       width: 100%;
-      height: 70vh;
+      height: 50vh;
+      padding: 1.5rem;
+    }
+    
+    .login-form-container {
+      max-width: 100%;
+    }
+    
+    .logo {
+      max-width: 140px;
+    }
+    
+    .login-form {
+      gap: 1.2rem;
+    }
+  }
+  
+  /* Small tablets and large phones */
+  @media (max-width: 640px) {
+    .login-left-panel {
+      height: 45vh;
+      min-height: 380px;
+      padding: 1.2rem;
+    }
+    
+    .dashboard-illustration {
+      width: 280px;
+      height: 230px;
+    }
+    
+    .login-left-panel h1 {
+      font-size: 1.6rem;
+      padding: 0 15px;
+    }
+    
+    .login-left-panel p {
+      font-size: 0.9rem;
+      padding: 0 15px;
+    }
+    
+    .login-right-panel {
+      height: 55vh;
+      padding: 1.2rem;
+    }
+    
+    .logo {
+      max-width: 120px;
+    }
+    
+    .input-with-icon input {
+      padding: 0.8rem 0.8rem 0.8rem 2.5rem;
+      font-size: 0.9rem;
+    }
+    
+    .input-icon {
+      left: 0.8rem;
+      width: 18px;
+      height: 18px;
+    }
+    
+    .login-button {
+      padding: 0.8rem;
+      font-size: 0.9rem;
+    }
+    
+    .checkbox-container {
+      font-size: 0.9rem;
+    }
+  }
+  
+  /* Mobile phones */
+  @media (max-width: 480px) {
+    .login-page {
+      height: 100vh;
+      overflow-y: auto;
+    }
+    
+    .login-left-panel {
+      height: 40vh;
+      min-height: 320px;
+      padding: 1rem;
+    }
+    
+    .dashboard-illustration {
+      width: 240px;
+      height: 200px;
+    }
+    
+    .login-left-panel h1 {
+      font-size: 1.4rem;
+      padding: 0 10px;
+      line-height: 1.2;
+    }
+    
+    .login-left-panel p {
+      font-size: 0.8rem;
+      padding: 0 10px;
+    }
+    
+    .login-right-panel {
+      height: 60vh;
+      padding: 1rem;
+    }
+    
+    .logo-container {
+      /*margin-bottom: 1.5rem;*/
+      display: none;
+    }
+    
+    .logo {
+      /*max-width: 100px;*/
+      display: none;
+    }
+    
+    .login-form {
+      gap: 1rem;
+    }
+    
+    .input-with-icon input {
+      padding: 0.75rem 0.75rem 0.75rem 2.2rem;
+      font-size: 0.85rem;
+    }
+    
+    .input-icon {
+      left: 0.7rem;
+      width: 16px;
+      height: 16px;
+    }
+    
+    .login-button {
+      padding: 0.75rem;
+      font-size: 0.85rem;
+    }
+    
+    .checkbox-container {
+      font-size: 0.85rem;
+      padding-left: 25px;
+    }
+    
+    .checkmark {
+      width: 16px;
+      height: 16px;
+    }
+    
+    .checkbox-container .checkmark:after {
+      left: 5px;
+      top: 2px;
+      width: 4px;
+      height: 8px;
+    }
+    
+    .error-message {
+      font-size: 0.8rem;
+      padding: 0.6rem;
+    }
+  }
+  
+  /* Very small phones */
+  @media (max-width: 360px) {
+    .login-left-panel {
+      height: 38vh;
+      min-height: 300px;
+    }
+    
+    .login-left-panel h1 {
+      font-size: 1.2rem;
+    }
+    
+    .login-left-panel p {
+      font-size: 0.75rem;
+    }
+    
+    .dashboard-illustration {
+      width: 200px;
+      height: 170px;
+    }
+    
+    .login-right-panel {
+      height: 62vh;
+    }
+    
+    .logo {
+      max-width: 90px;
+    }
+    
+    .input-with-icon input {
+      padding: 0.7rem 0.7rem 0.7rem 2rem;
+      font-size: 0.8rem;
+    }
+    
+    .input-icon {
+      left: 0.6rem;
+      width: 14px;
+      height: 14px;
+    }
+    
+    .login-button {
+      padding: 0.7rem;
+      font-size: 0.8rem;
+    }
+  }
+  
+  /* Landscape orientation for mobile devices */
+  @media (max-height: 500px) and (orientation: landscape) {
+    .login-page {
+      flex-direction: row;
+    }
+    
+    .login-left-panel {
+      width: 45%;
+      height: 100vh;
+      min-height: auto;
+    }
+    
+    .dashboard-illustration {
+      width: 200px;
+      height: 160px;
+    }
+    
+    .login-left-panel h1 {
+      margin-top: 180px;
+      font-size: 1.3rem;
+    }
+    
+    .login-left-panel p {
+      font-size: 0.8rem;
+    }
+    
+    .login-right-panel {
+      width: 55%;
+      height: 100vh;
+      padding: 1rem;
+    }
+    
+    .login-form {
+      gap: 0.8rem;
+    }
+    
+    .logo-container {
+      margin-bottom: 1rem;
     }
   }

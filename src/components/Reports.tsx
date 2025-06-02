@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import api from '../services/api';
 import '../styles/Reports.css';
@@ -66,10 +67,12 @@ const ReportsTable: React.FC<ReportsTableProps> = ({
   const [selectedMonth, setSelectedMonth] = useState<string>(initialSelectedMonth || '');
   const [selectedYear, setSelectedYear] = useState<string>(initialSelectedYear || '');
   const [showDateDropdown, setShowDateDropdown] = useState(false);
+  const [showMonthDropdown, setShowMonthDropdown] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [showColumnSelector, setShowColumnSelector] = useState(false);
   const [selectedColumns, setSelectedColumns] = useState<string[]>([]);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const monthDropdownRef = useRef<HTMLDivElement>(null);
   const modalBodyRef = useRef<HTMLDivElement>(null);
   const itemsPerPage = 20;
 
@@ -130,11 +133,41 @@ const ReportsTable: React.FC<ReportsTableProps> = ({
     });
   }, [t]);
 
+  // Helper function to get month names
+  const getMonthName = (monthValue: string): string => {
+    const months = [
+      t('dateFilter.january'),
+      t('dateFilter.february'),
+      t('dateFilter.march'),
+      t('dateFilter.april'),
+      t('dateFilter.may'),
+      t('dateFilter.june'),
+      t('dateFilter.july'),
+      t('dateFilter.august'),
+      t('dateFilter.september'),
+      t('dateFilter.october'),
+      t('dateFilter.november'),
+      t('dateFilter.december')
+    ];
+    
+    const monthIndex = parseInt(monthValue) - 1;
+    return months[monthIndex] || monthValue;
+  };
+
+  // Month selection handler
+  const handleMonthSelection = (monthValue: string) => {
+    setSelectedMonth(monthValue);
+    setShowMonthDropdown(false);
+  };
+
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setShowDateDropdown(false);
+      }
+      if (monthDropdownRef.current && !monthDropdownRef.current.contains(event.target as Node)) {
+        setShowMonthDropdown(false);
       }
     };
 
@@ -505,10 +538,6 @@ const ReportsTable: React.FC<ReportsTableProps> = ({
     }
   };
 
-  const handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedMonth(event.target.value);
-  };
-
   const handleYearChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedYear(event.target.value);
   };
@@ -636,24 +665,52 @@ const ReportsTable: React.FC<ReportsTableProps> = ({
 
             {dateFilterType === 'month' && (
               <div className="reports-month-year-container">
-                <select
-                  value={selectedMonth}
-                  onChange={handleMonthChange}
-                  className="reports-month-select"
-                >
-                  <option value="01">{t('dateFilter.january')}</option>
-                  <option value="02">{t('dateFilter.february')}</option>
-                  <option value="03">{t('dateFilter.march')}</option>
-                  <option value="04">{t('dateFilter.april')}</option>
-                  <option value="05">{t('dateFilter.may')}</option>
-                  <option value="06">{t('dateFilter.june')}</option>
-                  <option value="07">{t('dateFilter.july')}</option>
-                  <option value="08">{t('dateFilter.august')}</option>
-                  <option value="09">{t('dateFilter.september')}</option>
-                  <option value="10">{t('dateFilter.october')}</option>
-                  <option value="11">{t('dateFilter.november')}</option>
-                  <option value="12">{t('dateFilter.december')}</option>
-                </select>
+                {/* Custom Month Dropdown */}
+                <div className="reports-month-dropdown-container" ref={monthDropdownRef}>
+                  <button 
+                    className="reports-month-filter-button"
+                    onClick={() => setShowMonthDropdown(!showMonthDropdown)}
+                    aria-expanded={showMonthDropdown}
+                    aria-haspopup="true"
+                  >
+                    {getMonthName(selectedMonth)}
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      viewBox="0 0 24 24" 
+                      fill="currentColor" 
+                      className={`reports-dropdown-arrow ${showMonthDropdown ? 'open' : ''}`}
+                    >
+                      <path fillRule="evenodd" d="M12.53 16.28a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 011.06-1.06L12 14.69l6.97-6.97a.75.75 0 111.06 1.06l-7.5 7.5z" clipRule="evenodd" />
+                    </svg>
+                  </button>
+                  
+                  {showMonthDropdown && (
+                    <div className="reports-month-dropdown">
+                      {[
+                        { value: '01', label: t('dateFilter.january') },
+                        { value: '02', label: t('dateFilter.february') },
+                        { value: '03', label: t('dateFilter.march') },
+                        { value: '04', label: t('dateFilter.april') },
+                        { value: '05', label: t('dateFilter.may') },
+                        { value: '06', label: t('dateFilter.june') },
+                        { value: '07', label: t('dateFilter.july') },
+                        { value: '08', label: t('dateFilter.august') },
+                        { value: '09', label: t('dateFilter.september') },
+                        { value: '10', label: t('dateFilter.october') },
+                        { value: '11', label: t('dateFilter.november') },
+                        { value: '12', label: t('dateFilter.december') }
+                      ].map((month) => (
+                        <div
+                          key={month.value}
+                          className={`reports-month-option ${selectedMonth === month.value ? 'active' : ''}`}
+                          onClick={() => handleMonthSelection(month.value)}
+                        >
+                          {month.label}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 
                 <input
                   type="number"

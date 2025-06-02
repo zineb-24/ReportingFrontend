@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import api, { logout, isAdmin } from '../services/api';
 import '../styles/UserDashboard.css';
@@ -36,13 +36,124 @@ interface DateRange {
 
 type DateFilterType = 'date' | 'period' | 'month' | 'year' | 'day' | 'custom';
 
+// Custom hook for responsive breakpoints
+const useResponsive = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(true);
+
+  useEffect(() => {
+    const checkDevice = () => {
+      const width = window.innerWidth;
+      setIsMobile(width <= 768);
+      setIsTablet(width > 768 && width <= 1024);
+      setIsDesktop(width > 1024);
+    };
+
+    checkDevice();
+    window.addEventListener('resize', checkDevice);
+    return () => window.removeEventListener('resize', checkDevice);
+  }, []);
+
+  return { isMobile, isTablet, isDesktop };
+};
+
+// Custom hook for gym tabs scroll detection - FIXED
+const useGymTabsScroll = (salles: Salle[]) => {
+  const [showArrows, setShowArrows] = useState(false);
+  const gymTabsRef = useRef<HTMLDivElement | null>(null);
+
+  const checkScrollable = useCallback(() => {
+    if (gymTabsRef.current) {
+      const { scrollWidth, clientWidth } = gymTabsRef.current;
+      setShowArrows(scrollWidth > clientWidth);
+    }
+  }, []);
+
+  useEffect(() => {
+    checkScrollable();
+    let resizeObserver: ResizeObserver | null = null;
+    
+    if (gymTabsRef.current) {
+      resizeObserver = new ResizeObserver(checkScrollable);
+      resizeObserver.observe(gymTabsRef.current);
+    }
+
+    return () => {
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
+    };
+  }, [salles, checkScrollable]);
+
+  return { showArrows, gymTabsRef };
+};
+
+// Custom hook for outside click detection - FIXED
+const useOutsideClick = (
+  ref: React.RefObject<HTMLElement | null>,
+  handler: () => void
+) => {
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        handler();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [ref, handler]);
+};
+
+// Custom hook for swipe gestures on mobile - FIXED
+const useSwipeGesture = (
+  ref: React.RefObject<HTMLDivElement | null>,
+  onSwipeLeft?: () => void,
+  onSwipeRight?: () => void
+) => {
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe && onSwipeLeft) onSwipeLeft();
+    if (isRightSwipe && onSwipeRight) onSwipeRight();
+  };
+
+  return {
+    onTouchStart,
+    onTouchMove,
+    onTouchEnd
+  };
+};
+
 const UserDashboard: React.FC = () => {
   const { t } = useTranslation();
+  
+  // Responsive hooks
+  const { isMobile, isTablet, isDesktop } = useResponsive();
+  
+  // State variables
   const [showRangeLimitMessage, setShowRangeLimitMessage] = useState(false);
   const [revenueData, setRevenueData] = useState<Array<{date: string, amount: number, label: string}>>([]);
   const [isRevenueLoading, setIsRevenueLoading] = useState(false);
-  const gymTabsRef = useRef<HTMLDivElement>(null);
-  const [showArrows, setShowArrows] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const [loading, setLoading] = useState(true);
@@ -59,9 +170,39 @@ const UserDashboard: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState<string>('');
   const [activeMenuItem, setActiveMenuItem] = useState('dashboard');
   const [showDateDropdown, setShowDateDropdown] = useState(false);
-  const statsScrollRef = useRef<HTMLDivElement>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [showMonthDropdown, setShowMonthDropdown] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Refs - FIXED TYPE DEFINITIONS
+  const statsScrollRef = useRef<HTMLDivElement | null>(null);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const monthDropdownRef = useRef<HTMLDivElement | null>(null);
+  
+  // Gym tabs scroll functionality - FIXED
+  const { showArrows, gymTabsRef } = useGymTabsScroll(salles);
+  
+  // Outside click handler for dropdown - FIXED
+  useOutsideClick(dropdownRef, () => setShowDateDropdown(false));
+  useOutsideClick(monthDropdownRef, () => setShowMonthDropdown(false));
+  
+  // Swipe handlers for mobile gym tabs - FIXED
+  const scrollGymTabs = useCallback((direction: 'left' | 'right') => {
+    if (gymTabsRef.current) {
+      const scrollAmount = Math.min(200, gymTabsRef.current.clientWidth / 2);
+      gymTabsRef.current.scrollBy({ 
+        left: direction === 'left' ? -scrollAmount : scrollAmount, 
+        behavior: 'smooth' 
+      });
+    }
+  }, [gymTabsRef]);
+  
+  // FIXED: Properly typed swipe handlers
+  const swipeHandlers = useSwipeGesture(
+    gymTabsRef,
+    () => scrollGymTabs('left'),
+    () => scrollGymTabs('right')
+  );
 
   // Set active menu item based on URL path
   useEffect(() => {
@@ -78,20 +219,6 @@ const UserDashboard: React.FC = () => {
       setActiveMenuItem('dashboard');
     }
   }, [location]);
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setShowDateDropdown(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
 
   // Format date for API requests
   const formatDate = (date: Date): string => {
@@ -122,6 +249,17 @@ const UserDashboard: React.FC = () => {
       });
     }
   }, [dateFilterType]);
+
+  // Auto-collapse sidebar on mobile and close mobile menu on resize
+  useEffect(() => {
+    if (isMobile) {
+      setIsSidebarCollapsed(true);
+      setIsMobileMenuOpen(false);
+    } else {
+      setIsSidebarCollapsed(false);
+      setIsMobileMenuOpen(false);
+    }
+  }, [isMobile]);
 
   // Fetch dashboard data on component mount
   useEffect(() => {
@@ -194,20 +332,6 @@ const UserDashboard: React.FC = () => {
     fetchStats();
   }, [selectedSalle, dateRange, dateFilterType, selectedMonth, selectedYear, activeMenuItem]);
 
-  // Effect for checking if tabs are scrollable
-  useEffect(() => {
-    checkTabsScrollable();
-    window.addEventListener('resize', checkTabsScrollable);
-    
-    return () => {
-      window.removeEventListener('resize', checkTabsScrollable);
-    };
-  }, [salles]);
-
-  const handleSalleChange = (salle: Salle) => {
-    setSelectedSalle(salle);
-  };
-
   // Effect for fetching revenue data for the Bar Chart (only for dashboard)
   useEffect(() => {
     if (!selectedSalle || activeMenuItem !== 'dashboard') return;
@@ -261,6 +385,11 @@ const UserDashboard: React.FC = () => {
     
     fetchRevenueData();
   }, [selectedSalle, dateRange, dateFilterType, selectedMonth, selectedYear, activeMenuItem]);
+
+  // Event handlers
+  const handleSalleChange = (salle: Salle) => {
+    setSelectedSalle(salle);
+  };
 
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newDate = event.target.value;
@@ -320,6 +449,7 @@ const UserDashboard: React.FC = () => {
 
   const handleMenuClick = (menuItem: string) => {
     setActiveMenuItem(menuItem);
+    setIsMobileMenuOpen(false); // Close mobile menu when item is clicked
     
     if (menuItem === 'dashboard') {
       navigate('/user-dashboard');
@@ -328,24 +458,56 @@ const UserDashboard: React.FC = () => {
     }
   };
 
-  const formatCurrency = (amount: number): string => {
-    return new Intl.NumberFormat('fr-MA', {
-      style: 'decimal',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    }).format(amount) + ' MAD';
+  // Helper function to get month names
+  const getMonthName = (monthValue: string): string => {
+    const months = [
+      t('dateFilter.january'),
+      t('dateFilter.february'),
+      t('dateFilter.march'),
+      t('dateFilter.april'),
+      t('dateFilter.may'),
+      t('dateFilter.june'),
+      t('dateFilter.july'),
+      t('dateFilter.august'),
+      t('dateFilter.september'),
+      t('dateFilter.october'),
+      t('dateFilter.november'),
+      t('dateFilter.december')
+    ];
+    
+    const monthIndex = parseInt(monthValue) - 1;
+    return months[monthIndex] || monthValue;
   };
 
-  const checkTabsScrollable = () => {
-    const tabsContainer = document.querySelector('.customer-gym-tabs');
-    if (tabsContainer) {
-      const isScrollable = tabsContainer.scrollWidth > tabsContainer.clientWidth;
-      setShowArrows(isScrollable);
+  // Month selection handler
+  const handleMonthSelection = (monthValue: string) => {
+    setSelectedMonth(monthValue);
+    setShowMonthDropdown(false);
+  };
+
+  // Utility functions
+  const formatCurrency = (amount: number): string => {
+    try {
+      return new Intl.NumberFormat('fr-MA', {
+        style: 'decimal',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(amount) + ' MAD';
+    } catch (error) {
+      return amount.toFixed(2) + ' MAD';
     }
   };
 
   const toggleSidebar = () => {
     setIsSidebarCollapsed(!isSidebarCollapsed);
+  };
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
   };
 
   const getDateFilterLabel = () => {
@@ -358,40 +520,373 @@ const UserDashboard: React.FC = () => {
     }
   };
 
+  // Keyboard navigation handler
+  const handleKeyboardNavigation = (
+    event: React.KeyboardEvent,
+    items: Salle[],
+    currentIndex: number
+  ) => {
+    switch (event.key) {
+      case 'ArrowLeft':
+        event.preventDefault();
+        const prevIndex = currentIndex > 0 ? currentIndex - 1 : items.length - 1;
+        handleSalleChange(items[prevIndex]);
+        break;
+      case 'ArrowRight':
+        event.preventDefault();
+        const nextIndex = currentIndex < items.length - 1 ? currentIndex + 1 : 0;
+        handleSalleChange(items[nextIndex]);
+        break;
+      case 'Home':
+        event.preventDefault();
+        handleSalleChange(items[0]);
+        break;
+      case 'End':
+        event.preventDefault();
+        handleSalleChange(items[items.length - 1]);
+        break;
+    }
+  };
+
+  // Helper function to render date inputs based on filter type
+  const renderDateInputs = () => {
+    switch (dateFilterType) {
+      case 'date':
+        return (
+          <div className="customer-date-input-container">
+            <div className="customer-date-input-wrapper">
+              <input
+                type="date"
+                id="single-date"
+                value={dateRange.startDate || ''}
+                onChange={handleDateChange}
+                className="customer-date-input"
+              />
+            </div>
+          </div>
+        );
+
+      case 'period':
+        return (
+          <div className="customer-date-range-container">
+            <div className="customer-date-input-wrapper">
+              <input
+                type="date"
+                id="start-date"
+                value={dateRange.startDate || ''}
+                onChange={handleDateChange}
+                className="customer-date-input"
+              />
+            </div>
+            
+            {!isMobile && <span className="customer-date-separator">{t('dateFilter.to')}</span>}
+            
+            <div className="customer-date-input-wrapper">
+              <input
+                type="date"
+                id="end-date"
+                value={dateRange.endDate || ''}
+                onChange={handleDateChange}
+                className="customer-date-input"
+              />
+            </div>
+          </div>
+        );
+
+      case 'month':
+        return (
+          <div className="customer-month-year-container">
+            {/* Custom Month Dropdown */}
+            <div className="customer-month-dropdown-container" ref={monthDropdownRef}>
+              <button 
+                className="customer-month-filter-button"
+                onClick={() => setShowMonthDropdown(!showMonthDropdown)}
+                aria-expanded={showMonthDropdown}
+                aria-haspopup="true"
+              >
+                {getMonthName(selectedMonth)}
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  viewBox="0 0 24 24" 
+                  fill="currentColor" 
+                  className={`dropdown-arrow ${showMonthDropdown ? 'open' : ''}`}
+                >
+                  <path fillRule="evenodd" d="M12.53 16.28a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 011.06-1.06L12 14.69l6.97-6.97a.75.75 0 111.06 1.06l-7.5 7.5z" clipRule="evenodd" />
+                </svg>
+              </button>
+              
+              {showMonthDropdown && (
+                <div className="customer-month-dropdown">
+                  {[
+                    { value: '01', label: t('dateFilter.january') },
+                    { value: '02', label: t('dateFilter.february') },
+                    { value: '03', label: t('dateFilter.march') },
+                    { value: '04', label: t('dateFilter.april') },
+                    { value: '05', label: t('dateFilter.may') },
+                    { value: '06', label: t('dateFilter.june') },
+                    { value: '07', label: t('dateFilter.july') },
+                    { value: '08', label: t('dateFilter.august') },
+                    { value: '09', label: t('dateFilter.september') },
+                    { value: '10', label: t('dateFilter.october') },
+                    { value: '11', label: t('dateFilter.november') },
+                    { value: '12', label: t('dateFilter.december') }
+                  ].map((month) => (
+                    <div
+                      key={month.value}
+                      className={`customer-month-option ${selectedMonth === month.value ? 'active' : ''}`}
+                      onClick={() => handleMonthSelection(month.value)}
+                    >
+                      {month.label}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            
+            {/* Year Input - remains the same */}
+            <input
+              type="number"
+              value={selectedYear}
+              onChange={handleYearChange}
+              min="2020"
+              max="2030"
+              className="customer-year-input"
+              placeholder={t('dateFilter.year')}
+            />
+          </div>
+        );
+
+      case 'year':
+        return (
+          <div className="customer-year-container">
+            <input
+              type="number"
+              value={selectedYear}
+              onChange={handleYearChange}
+              min="2020"
+              max="2030"
+              className="customer-year-input"
+              placeholder={t('dateFilter.year')}
+            />
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  // Helper function to render dropdown options
+  const renderDateDropdown = () => (
+    <div className="customer-date-dropdown">
+      <div 
+        className={`dropdown-option ${dateFilterType === 'date' ? 'active' : ''}`}
+        onClick={() => handleDateFilterTypeChange('date')}
+      >
+        {t('dateFilter.date')}
+      </div>
+      <div 
+        className={`dropdown-option ${dateFilterType === 'period' ? 'active' : ''}`}
+        onClick={() => handleDateFilterTypeChange('period')}
+      >
+        {t('dateFilter.period')}
+      </div>
+      <div 
+        className={`dropdown-option ${dateFilterType === 'month' ? 'active' : ''}`}
+        onClick={() => handleDateFilterTypeChange('month')}
+      >
+        {t('dateFilter.month')}
+      </div>
+      <div 
+        className={`dropdown-option ${dateFilterType === 'year' ? 'active' : ''}`}
+        onClick={() => handleDateFilterTypeChange('year')}
+      >
+        {t('dateFilter.year')}
+      </div>
+    </div>
+  );
+
+  // Responsive date selector layout
+  const getDateSelectorLayout = () => {
+    if (isMobile) {
+      return (
+        <div className="customer-date-selector">
+          {renderDateInputs()}
+          
+          <div className="customer-date-dropdown-container" ref={dropdownRef}>
+            <button 
+              className="customer-date-filter-button"
+              onClick={() => setShowDateDropdown(!showDateDropdown)}
+              aria-expanded={showDateDropdown}
+              aria-haspopup="true"
+            >
+              {getDateFilterLabel()}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="dropdown-arrow">
+                <path fillRule="evenodd" d="M12.53 16.28a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 011.06-1.06L12 14.69l6.97-6.97a.75.75 0 111.06 1.06l-7.5 7.5z" clipRule="evenodd" />
+              </svg>
+            </button>
+            
+            {showDateDropdown && renderDateDropdown()}
+          </div>
+        </div>
+      );
+    }
+    
+    return (
+      <div className="customer-date-selector">
+        {renderDateInputs()}
+        
+        <div className="customer-date-dropdown-container" ref={dropdownRef}>
+          <button 
+            className="customer-date-filter-button"
+            onClick={() => setShowDateDropdown(!showDateDropdown)}
+            aria-expanded={showDateDropdown}
+            aria-haspopup="true"
+          >
+            {getDateFilterLabel()}
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="dropdown-arrow">
+              <path fillRule="evenodd" d="M12.53 16.28a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 011.06-1.06L12 14.69l6.97-6.97a.75.75 0 111.06 1.06l-7.5 7.5z" clipRule="evenodd" />
+            </svg>
+          </button>
+          
+          {showDateDropdown && renderDateDropdown()}
+        </div>
+      </div>
+    );
+  };
+
+  // Enhanced gym selector with responsive features - FIXED
+  const renderGymSelector = () => {
+    const currentSalleIndex = selectedSalle ? salles.findIndex(s => s.id_salle === selectedSalle.id_salle) : -1;
+    
+    return (
+      <div className={`customer-gym-selector ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+        {showArrows && !isMobile && (
+          <button 
+            className="customer-nav-arrow prev-arrow" 
+            onClick={() => scrollGymTabs('left')}
+            aria-label="Scroll gym tabs left"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path fillRule="evenodd" d="M7.72 12.53a.75.75 0 010-1.06l7.5-7.5a.75.75 0 111.06 1.06L9.31 12l6.97 6.97a.75.75 0 11-1.06 1.06l-7.5-7.5z" clipRule="evenodd" />
+            </svg>
+          </button>
+        )}
+        
+        <div 
+          className="customer-gym-tabs" 
+          ref={gymTabsRef}
+          {...(isMobile ? swipeHandlers : {})}
+          onKeyDown={(e) => handleKeyboardNavigation(e, salles, currentSalleIndex)}
+          role="tablist"
+          aria-label="Gym selection tabs"
+        >
+          {salles.map((salle) => (
+            <div 
+              key={salle.id_salle} 
+              className={`customer-gym-tab ${selectedSalle && selectedSalle.id_salle === salle.id_salle ? 'active' : ''}`}
+              onClick={() => handleSalleChange(salle)}
+              role="tab"
+              aria-selected={selectedSalle?.id_salle === salle.id_salle}
+              aria-controls={`gym-panel-${salle.id_salle}`}
+              tabIndex={selectedSalle?.id_salle === salle.id_salle ? 0 : -1}
+            >
+              {salle.name}
+            </div>
+          ))}
+        </div>
+        
+        {showArrows && !isMobile && (
+          <button 
+            className="customer-nav-arrow next-arrow" 
+            onClick={() => scrollGymTabs('right')}
+            aria-label="Scroll gym tabs right"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path fillRule="evenodd" d="M16.28 11.47a.75.75 0 010 1.06l-7.5 7.5a.75.75 0 01-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 011.06-1.06l7.5 7.5z" clipRule="evenodd" />
+            </svg>
+          </button>
+        )}
+        
+        {isMobile && showArrows && (
+          <>
+            <button 
+              className="customer-nav-arrow prev-arrow" 
+              onClick={() => scrollGymTabs('left')}
+              aria-label="Scroll gym tabs left"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path fillRule="evenodd" d="M7.72 12.53a.75.75 0 010-1.06l7.5-7.5a.75.75 0 111.06 1.06L9.31 12l6.97 6.97a.75.75 0 11-1.06 1.06l-7.5-7.5z" clipRule="evenodd" />
+              </svg>
+            </button>
+            
+            <button 
+              className="customer-nav-arrow next-arrow" 
+              onClick={() => scrollGymTabs('right')}
+              aria-label="Scroll gym tabs right"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path fillRule="evenodd" d="M16.28 11.47a.75.75 0 010 1.06l-7.5 7.5a.75.75 0 01-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 011.06-1.06l7.5 7.5z" clipRule="evenodd" />
+              </svg>
+            </button>
+          </>
+        )}
+      </div>
+    );
+  };
+
   if (loading && !user) {
     return <div className="loading">{t('welcome.loadingDashboard')}</div>;
   }
 
   return (
     <div className="customer-layout">
-      {/* Header */}
-      <UserHeader />
+      {/* Enhanced Header with Mobile Menu Button */}
+      <UserHeader onMobileMenuToggle={toggleMobileMenu} isMobile={isMobile} />
+
+      {/* Mobile Overlay */}
+      {isMobile && (
+        <div 
+          className={`mobile-overlay ${isMobileMenuOpen ? 'active' : ''}`}
+          onClick={closeMobileMenu}
+        />
+      )}
 
       <div className="customer-content">
-        {/* Sidebar */}
-        <aside className={`customer-sidebar ${isSidebarCollapsed ? 'collapsed' : ''}`}>
-          {/* Collapse/Expand Button */}
-          <button 
-            className="customer-sidebar-toggle"
-            onClick={toggleSidebar}
-            aria-label={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          >
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              viewBox="0 0 24 24" 
-              fill="currentColor"
-              className={`toggle-icon ${isSidebarCollapsed ? 'collapsed' : ''}`}
+        {/* Enhanced Sidebar with Mobile Support */}
+        <aside className={`customer-sidebar ${isSidebarCollapsed ? 'collapsed' : ''} ${isMobile && isMobileMenuOpen ? 'mobile-open' : ''}`}>
+          {/* Collapse/Expand Button - Hidden on mobile */}
+          {!isMobile && (
+            <button 
+              className="customer-sidebar-toggle"
+              onClick={toggleSidebar}
+              aria-label={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             >
-              <path fillRule="evenodd" d="M7.72 12.53a.75.75 0 010-1.06l7.5-7.5a.75.75 0 111.06 1.06L9.31 12l6.97 6.97a.75.75 0 11-1.06 1.06l-7.5-7.5z" clipRule="evenodd" />
-            </svg>
-          </button>
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 24 24" 
+                fill="currentColor"
+                className={`toggle-icon ${isSidebarCollapsed ? 'collapsed' : ''}`}
+              >
+                <path fillRule="evenodd" d="M7.72 12.53a.75.75 0 010-1.06l7.5-7.5a.75.75 0 111.06 1.06L9.31 12l6.97 6.97a.75.75 0 11-1.06 1.06l-7.5-7.5z" clipRule="evenodd" />
+              </svg>
+            </button>
+          )}
 
           <nav className="customer-sidebar-nav">
             <ul>
               <li 
                 className={activeMenuItem === 'dashboard' ? 'active' : ''}
                 onClick={() => handleMenuClick('dashboard')}
-                title={isSidebarCollapsed ? t('sidebar.dashboard') : ''}
+                title={isSidebarCollapsed && !isMobile ? t('sidebar.dashboard') : ''}
+                role="menuitem"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleMenuClick('dashboard');
+                  }
+                }}
               >
                 <div>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="customer-menu-icon">
@@ -405,7 +900,15 @@ const UserDashboard: React.FC = () => {
               <li 
                 className={activeMenuItem === 'reports' ? 'active' : ''}
                 onClick={() => handleMenuClick('reports')}
-                title={isSidebarCollapsed ? t('sidebar.reports') : ''}
+                title={isSidebarCollapsed && !isMobile ? t('sidebar.reports') : ''}
+                role="menuitem"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleMenuClick('reports');
+                  }
+                }}
               >
                 <div>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="customer-menu-icon">
@@ -418,7 +921,17 @@ const UserDashboard: React.FC = () => {
             </ul>
           </nav>
           
-          <button onClick={handleLogout} className="customer-sidebar-logout">
+          <button 
+            onClick={handleLogout} 
+            className="customer-sidebar-logout"
+            aria-label="Logout"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleLogout();
+              }
+            }}
+          >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="customer-logout-icon">
               <path fillRule="evenodd" d="M7.5 3.75A1.5 1.5 0 006 5.25v13.5a1.5 1.5 0 001.5 1.5h6a1.5 1.5 0 001.5-1.5V15a.75.75 0 011.5 0v3.75a3 3 0 01-3 3h-6a3 3 0 01-3-3V5.25a3 3 0 013-3h6a3 3 0 013 3V9A.75.75 0 0115 9V5.25a1.5 1.5 0 00-1.5-1.5h-6zm10.72 4.72a.75.75 0 011.06 0l3 3a.75.75 0 010 1.06l-3 3a.75.75 0 11-1.06-1.06l1.72-1.72H9a.75.75 0 010-1.5h10.94l-1.72-1.72a.75.75 0 010-1.06z" clipRule="evenodd" />
             </svg>
@@ -426,196 +939,36 @@ const UserDashboard: React.FC = () => {
           </button>
         </aside>
         
-        {/* Gym Selector */}
-        <div className={`customer-gym-selector ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
-          {showArrows && (
-            <button className="customer-nav-arrow prev-arrow" onClick={() => {
-              const tabs = document.querySelector('.customer-gym-tabs');
-              if (tabs) tabs.scrollBy({ left: -200, behavior: 'smooth' });
-            }}>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <path fillRule="evenodd" d="M7.72 12.53a.75.75 0 010-1.06l7.5-7.5a.75.75 0 111.06 1.06L9.31 12l6.97 6.97a.75.75 0 11-1.06 1.06l-7.5-7.5z" clipRule="evenodd" />
-              </svg>
-            </button>
-          )}
-          
-          <div className="customer-gym-tabs" ref={gymTabsRef}>
-            {salles.map((salle) => (
-              <div 
-                key={salle.id_salle} 
-                className={`customer-gym-tab ${selectedSalle && selectedSalle.id_salle === salle.id_salle ? 'active' : ''}`}
-                onClick={() => handleSalleChange(salle)}
-              >
-                {salle.name}
-              </div>
-            ))}
-          </div>
-          
-          {showArrows && (
-            <button className="customer-nav-arrow next-arrow" onClick={() => {
-              const tabs = document.querySelector('.customer-gym-tabs');
-              if (tabs) tabs.scrollBy({ left: 200, behavior: 'smooth' });
-            }}>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <path fillRule="evenodd" d="M16.28 11.47a.75.75 0 010 1.06l-7.5 7.5a.75.75 0 01-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 011.06-1.06l7.5 7.5z" clipRule="evenodd" />
-              </svg>
-            </button>
-          )}
-        </div>
+        {/* Enhanced Gym Selector */}
+        {renderGymSelector()}
 
         {/* Main Content */}
         <main className={`customer-main-content ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
           {activeMenuItem === 'dashboard' && (
             <>
-              {/* Welcome message */}
+              {/* Welcome message with responsive date selector */}
               <div className="customer-welcome-section">
-                <h2><span className="customer-welcome-text">{t('welcome.greeting')} </span>{user?.name || 'user'}</h2>
+                <h2>
+                  <span className="customer-welcome-text">{t('welcome.greeting')} </span>
+                  {user?.name || 'user'}
+                </h2>
                 
-                {/*Date Selector with Dropdown */}
-                <div className="customer-date-selector">
-                  {/* Date inputs based on selected filter type - NOW FIRST */}
-                  {dateFilterType === 'date' && (
-                    <div className="customer-date-input-container">
-                      <div className="customer-date-input-wrapper">
-                        <input
-                          type="date"
-                          id="single-date"
-                          value={dateRange.startDate || ''}
-                          onChange={handleDateChange}
-                          className="customer-date-input"
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  {dateFilterType === 'period' && (
-                    <div className="customer-date-range-container">
-                      <div className="customer-date-input-wrapper">
-                        <input
-                          type="date"
-                          id="start-date"
-                          value={dateRange.startDate || ''}
-                          onChange={handleDateChange}
-                          className="customer-date-input"
-                        />
-                      </div>
-                      
-                      <span className="customer-date-separator">{t('dateFilter.to')}</span>
-                      
-                      <div className="customer-date-input-wrapper">
-                        <input
-                          type="date"
-                          id="end-date"
-                          value={dateRange.endDate || ''}
-                          onChange={handleDateChange}
-                          className="customer-date-input"
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  {dateFilterType === 'month' && (
-                    <div className="customer-month-year-container">
-                      <select
-                        value={selectedMonth}
-                        onChange={handleMonthChange}
-                        className="customer-month-select"
-                      >
-                        <option value="01">{t('dateFilter.january')}</option>
-                        <option value="02">{t('dateFilter.february')}</option>
-                        <option value="03">{t('dateFilter.march')}</option>
-                        <option value="04">{t('dateFilter.april')}</option>
-                        <option value="05">{t('dateFilter.may')}</option>
-                        <option value="06">{t('dateFilter.june')}</option>
-                        <option value="07">{t('dateFilter.july')}</option>
-                        <option value="08">{t('dateFilter.august')}</option>
-                        <option value="09">{t('dateFilter.september')}</option>
-                        <option value="10">{t('dateFilter.october')}</option>
-                        <option value="11">{t('dateFilter.november')}</option>
-                        <option value="12">{t('dateFilter.december')}</option>
-                      </select>
-                      
-                      <input
-                        type="number"
-                        value={selectedYear}
-                        onChange={handleYearChange}
-                        min="2020"
-                        max="2030"
-                        className="customer-year-input"
-                        placeholder={t('dateFilter.year')}
-                      />
-                    </div>
-                  )}
-
-                  {dateFilterType === 'year' && (
-                    <div className="customer-year-container">
-                      <input
-                        type="number"
-                        value={selectedYear}
-                        onChange={handleYearChange}
-                        min="2020"
-                        max="2030"
-                        className="customer-year-input"
-                        placeholder={t('dateFilter.year')}
-                      />
-                    </div>
-                  )}
-
-                  {/* Dropdown container - NOW SECOND */}
-                  <div className="customer-date-dropdown-container" ref={dropdownRef}>
-                    <button 
-                      className="customer-date-filter-button"
-                      onClick={() => setShowDateDropdown(!showDateDropdown)}
-                    >
-                      {getDateFilterLabel()}
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="dropdown-arrow">
-                        <path fillRule="evenodd" d="M12.53 16.28a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 011.06-1.06L12 14.69l6.97-6.97a.75.75 0 111.06 1.06l-7.5 7.5z" clipRule="evenodd" />
-                      </svg>
-                    </button>
-                    
-                    {showDateDropdown && (
-                      <div className="customer-date-dropdown">
-                        <div 
-                          className={`dropdown-option ${dateFilterType === 'date' ? 'active' : ''}`}
-                          onClick={() => handleDateFilterTypeChange('date')}
-                        >
-                          {t('dateFilter.date')}
-                        </div>
-                        <div 
-                          className={`dropdown-option ${dateFilterType === 'period' ? 'active' : ''}`}
-                          onClick={() => handleDateFilterTypeChange('period')}
-                        >
-                          {t('dateFilter.period')}
-                        </div>
-                        <div 
-                          className={`dropdown-option ${dateFilterType === 'month' ? 'active' : ''}`}
-                          onClick={() => handleDateFilterTypeChange('month')}
-                        >
-                          {t('dateFilter.month')}
-                        </div>
-                        <div 
-                          className={`dropdown-option ${dateFilterType === 'year' ? 'active' : ''}`}
-                          onClick={() => handleDateFilterTypeChange('year')}
-                        >
-                          {t('dateFilter.year')}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
+                {/* Responsive Date Selector */}
+                {getDateSelectorLayout()}
               </div>
 
-              {/* Stats Cards */}
+              {/* Enhanced Stats Cards with improved scrolling */}
               <div className="customer-stats-carousel">
                 <div className="customer-stats-container">
                   <button 
                     className="customer-stats-nav-arrow customer-stats-prev"
                     onClick={() => {
                       if (statsScrollRef.current) {
-                        const scrollAmount = 250;
+                        const scrollAmount = isMobile ? 180 : 250;
                         statsScrollRef.current.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
                       }
                     }}
+                    aria-label="Scroll stats left"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                       <path fillRule="evenodd" d="M7.72 12.53a.75.75 0 010-1.06l7.5-7.5a.75.75 0 111.06 1.06L9.31 12l6.97 6.97a.75.75 0 11-1.06 1.06l-7.5-7.5z" clipRule="evenodd" />
@@ -724,10 +1077,11 @@ const UserDashboard: React.FC = () => {
                     className="customer-stats-nav-arrow customer-stats-next"
                     onClick={() => {
                       if (statsScrollRef.current) {
-                        const scrollAmount = 250;
+                        const scrollAmount = isMobile ? 180 : 250;
                         statsScrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
                       }
                     }}
+                    aria-label="Scroll stats right"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                       <path fillRule="evenodd" d="M16.28 11.47a.75.75 0 010 1.06l-7.5 7.5a.75.75 0 01-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 011.06-1.06l7.5 7.5z" clipRule="evenodd" />
@@ -736,10 +1090,9 @@ const UserDashboard: React.FC = () => {
                 </div>
               </div>
 
-              {/* Dashboard content area */}
+              {/* Dashboard content area with responsive charts */}
               <div className="customer-dashboard-content">
-                {/* Chart and table components */}
-
+                {/* Revenue Distribution Chart */}
                 {selectedSalle && (
                   <RevenueDistribution
                     salleId={selectedSalle.id_salle}
@@ -771,6 +1124,7 @@ const UserDashboard: React.FC = () => {
                   </div>
                 )}
 
+                {/* Revenue Chart */}
                 {selectedSalle && (
                   <RevenueChart
                     data={revenueData}
@@ -780,6 +1134,7 @@ const UserDashboard: React.FC = () => {
                   />
                 )}
 
+                {/* Fallback messages */}
                 {!selectedSalle && (
                   <div className="customer-select-gym-message">
                     <p>{t('welcome.selectGym')}</p>
@@ -791,20 +1146,21 @@ const UserDashboard: React.FC = () => {
                     <p>{t('welcome.loadingData')}</p>
                   </div>
                 )}
-                
               </div>
             </>
           )}
 
           {/* Reports Tab Content */}
           {activeMenuItem === 'reports' && (
-            <ReportsTable 
-              selectedSalle={selectedSalle}
-              initialDateFilterType={dateFilterType}
-              initialDateRange={dateRange}
-              initialSelectedMonth={selectedMonth}
-              initialSelectedYear={selectedYear}
-            />
+            <div role="tabpanel" id={`gym-panel-${selectedSalle?.id_salle}`} aria-labelledby="reports-tab">
+              <ReportsTable 
+                selectedSalle={selectedSalle}
+                initialDateFilterType={dateFilterType}
+                initialDateRange={dateRange}
+                initialSelectedMonth={selectedMonth}
+                initialSelectedYear={selectedYear}
+              />
+            </div>
           )}
         </main>
       </div>

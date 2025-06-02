@@ -1,24 +1,107 @@
-/* src/styles/RevenueChart.css */
+/* src/styles/RevenueChart.css - Fully Responsive Version */
 
 .recharts-rectangle.recharts-tooltip-cursor {
   fill: rgba(99, 179, 237, 0.3) !important; /* Light blue background */
 }
 
 .revenue-chart-container {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
-    padding: 1.5rem;
-    margin-bottom: 2rem;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.revenue-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #334155;
+  margin: 0 0 1.5rem 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chart-container {
+  height: 400px;
+  width: 100%;
+  min-height: 300px;
+}
+
+.chart-loading,
+.chart-empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 250px;
+  color: #64748b;
+  text-align: center;
+  font-size: 1rem;
+}
+
+.chart-tooltip {
+  background-color: rgba(0, 0, 0, 0.75);
+  border-radius: 4px;
+  padding: 0.75rem;
+  color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  min-width: 120px;
+  max-width: 200px;
+}
+
+.chart-tooltip-label {
+  margin: 0 0 0.25rem 0;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.chart-tooltip-value {
+  margin: 0;
+  font-weight: 600;
+  color: #63B3ED;
+  font-size: 0.9rem;
+}
+
+/* Tablet Responsive Styles (768px - 1024px) */
+@media (max-width: 1024px) {
+  .revenue-chart-container {
+    padding: 1.25rem;
   }
   
- .revenue-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #334155;
-    margin: 0 0 1.5rem 0;
+  .revenue-title {
+    font-size: 1.125rem;
   }
   
+  .chart-container {
+    height: 350px;
+  }
+  
+  .chart-tooltip {
+    padding: 0.625rem;
+    min-width: 110px;
+    max-width: 180px;
+  }
+  
+  .chart-tooltip-label {
+    font-size: 0.8rem;
+  }
+  
+  .chart-tooltip-value {
+    font-size: 0.85rem;
+  }
+}
+
+/* Mobile Responsive Styles (max-width: 768px) */
+@media (max-width: 768px) {
+  .revenue-chart-container {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .revenue-title {
+    font-size: 1.125rem;
+    margin-bottom: 1rem;
+  }
   
   .chart-container {
     height: 300px;
@@ -26,28 +109,116 @@
   
   .chart-loading,
   .chart-empty {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 250px;
-    color: #64748b;
+    height: 200px;
+    font-size: 0.9rem;
   }
   
   .chart-tooltip {
-    background-color: rgba(0, 0, 0, 0.75);
-    border-radius: 4px;
-    padding: 0.75rem;
-    color: white;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 0.5rem;
+    min-width: 100px;
+    max-width: 160px;
+    font-size: 0.8rem;
   }
   
   .chart-tooltip-label {
-    margin: 0 0 0.25rem 0;
-    font-weight: 500;
+    font-size: 0.75rem;
   }
   
   .chart-tooltip-value {
-    margin: 0;
-    font-weight: 600;
-    color: #63B3ED;
+    font-size: 0.8rem;
   }
+  
+  /* Mobile chart text adjustments */
+  .recharts-cartesian-axis-tick-value {
+    font-size: 0.75rem !important;
+  }
+  
+  .recharts-cartesian-axis text {
+    font-size: 0.75rem !important;
+  }
+}
+
+/* Extra Small Mobile (max-width: 480px) */
+@media (max-width: 480px) {
+  .revenue-chart-container {
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  
+  .revenue-title {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .chart-container {
+    height: 250px;
+    min-height: 220px;
+  }
+  
+  .chart-loading,
+  .chart-empty {
+    height: 180px;
+    font-size: 0.85rem;
+  }
+  
+  .chart-tooltip {
+    padding: 0.4rem;
+    min-width: 90px;
+    max-width: 140px;
+    font-size: 0.75rem;
+  }
+  
+  .chart-tooltip-label {
+    font-size: 0.7rem;
+  }
+  
+  .chart-tooltip-value {
+    font-size: 0.75rem;
+  }
+  
+  /* Extra small mobile chart text */
+  .recharts-cartesian-axis-tick-value {
+    font-size: 0.7rem !important;
+  }
+  
+  .recharts-cartesian-axis text {
+    font-size: 0.7rem !important;
+  }
+}
+
+/* Landscape Mobile Optimizations */
+@media (max-width: 768px) and (orientation: landscape) {
+  .chart-container {
+    height: 280px;
+  }
+  
+  .chart-loading,
+  .chart-empty {
+    height: 200px;
+  }
+}
+
+/* High DPI Display Optimizations */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .chart-tooltip {
+    transform: translateZ(0);
+  }
+  
+  .revenue-chart-container {
+    backface-visibility: hidden;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .revenue-chart-container {
+    box-shadow: none;
+    border: 1px solid #e2e8f0;
+    break-inside: avoid;
+    margin-bottom: 1rem;
+  }
+  
+  .chart-container {
+    height: 300px;
+  }
+}
