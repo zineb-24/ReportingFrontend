@@ -2,6 +2,9 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from './LanguageSwitcher';
 
+// Import the logo asset
+import logifitLogo from '../assets/LOGIFIT.png';
+
 interface UserHeaderProps {
   onMobileMenuToggle?: () => void;
   isMobile?: boolean;
@@ -26,7 +29,7 @@ const UserHeader: React.FC<UserHeaderProps> = ({ onMobileMenuToggle, isMobile = 
           </button>
         )}
         
-        <img src="/src/assets/LOGIFIT.png" alt="LogiFit" className="customer-logo-image" />
+        <img src={logifitLogo} alt="LogiFit" className="customer-logo-image" />
       </div>
       
       <h1 className="customer-header-title">{t('header.userDashboard')}</h1>

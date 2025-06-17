@@ -1,10 +1,13 @@
 import React from 'react';
 
+// Import the logo asset
+import logifitLogo from '../assets/LOGIFIT.png';
+
 const AdminHeader: React.FC = () => {
   return (
     <header className="admin-header">
       <div className="logo-container">
-        <img src="/src/assets/LOGIFIT.png" alt="LogiFit" className="logo-image" />
+        <img src={logifitLogo} alt="LogiFit" className="logo-image" />
       </div>
       <h1 className="header-title">Admin Dashboard</h1>
       <div className="user-profile">

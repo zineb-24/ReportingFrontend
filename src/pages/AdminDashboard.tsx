@@ -8,6 +8,10 @@ import AllGymsTable from '../components/AllGymsTable';
 import AllLinksTable from '../components/AllLinksTable';
 import AdminHeader from '../components/AdminHeader';
 
+// Import your assets
+import userIcon from '../assets/user.png';
+import gym3Icon from '../assets/gym3.png';
+import eyeIcon from '../assets/eye.png';
 
 interface AdminStats {
   total_gyms: number;
@@ -202,7 +206,7 @@ const AdminDashboard: React.FC = () => {
                       <p className="stat-value">{stats ? stats.regular_users : 0}</p>
                     </div>
                     <div className="stat-icon user-icon">
-                      <img src="/src/assets/user.png" alt="Users" className="stat-icon-image" />
+                      <img src={userIcon} alt="Users" className="stat-icon-image" />
                     </div>
                   </div>
                 </div>
@@ -214,7 +218,7 @@ const AdminDashboard: React.FC = () => {
                       <p className="stat-value">{stats ? stats.total_gyms : 0}</p>
                     </div>
                     <div className="stat-icon gym-icon">
-                      <img src="/src/assets/gym3.png" alt="Gyms" className="stat-icon-image" />
+                      <img src={gym3Icon} alt="Gyms" className="stat-icon-image" />
                     </div>
                   </div>
                 </div>
@@ -226,7 +230,7 @@ const AdminDashboard: React.FC = () => {
                       <p className="stat-value">{stats ? stats.admin_users : 0}</p>
                     </div>
                     <div className="stat-icon admin-icon">
-                      <img src="/src/assets/eye.png" alt="Admins" className="stat-icon-image" />
+                      <img src={eyeIcon} alt="Admins" className="stat-icon-image" />
                     </div>
                   </div>
                 </div>
