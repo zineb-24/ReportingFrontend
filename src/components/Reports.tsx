@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import api from '../services/api';
 import '../styles/Reports.css';
@@ -71,6 +70,7 @@ const ReportsTable: React.FC<ReportsTableProps> = ({
   const [isExporting, setIsExporting] = useState(false);
   const [showColumnSelector, setShowColumnSelector] = useState(false);
   const [selectedColumns, setSelectedColumns] = useState<string[]>([]);
+  const [isColumnsInitialized, setIsColumnsInitialized] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const monthDropdownRef = useRef<HTMLDivElement>(null);
   const modalBodyRef = useRef<HTMLDivElement>(null);
@@ -78,7 +78,6 @@ const ReportsTable: React.FC<ReportsTableProps> = ({
 
   // Define all available columns
   const availableColumns = [
-    { key: 'id', label: t('reports.table.id'), field: 'ID_reglement' },
     { key: 'contract', label: t('reports.table.contract'), field: 'CONTRAT' },
     { key: 'client', label: t('reports.table.client'), field: 'CLIENT' },
     { key: 'contractDate', label: t('reports.table.contractDate'), field: 'DATE_CONTRAT' },
@@ -96,26 +95,32 @@ const ReportsTable: React.FC<ReportsTableProps> = ({
     { key: 'gym', label: t('reports.table.gym'), field: 'salle_name' }
   ];
 
-  // Initialize with default essential columns (max 14)
+  // Initialize with default essential columns only once
   useEffect(() => {
-    if (selectedColumns.length === 0) {
+    if (!isColumnsInitialized) {
       setSelectedColumns([
-        'id', 'contract', 'client', 'contractDate', 'startDate', 
+        'contract', 'client', 'contractDate', 'startDate', 
         'endDate', 'amount', 'paymentMethod', 'paymentDate', 'gym'
       ]);
+      setIsColumnsInitialized(true);
     }
-  }, []);
+  }, [isColumnsInitialized]);
 
   // Handle column selection
   const handleColumnToggle = useCallback((columnKey: string) => {
     const currentScroll = modalBodyRef.current?.scrollTop || 0;
     
     setSelectedColumns(prev => {
-      const newColumns = prev.includes(columnKey)
-        ? prev.filter(key => key !== columnKey)
-        : prev.length < 14 
-          ? [...prev, columnKey]
-          : (alert(t('reports.pdf.maxColumnsReached')), prev);
+      const isCurrentlySelected = prev.includes(columnKey);
+      let newColumns;
+      
+      if (isCurrentlySelected) {
+        // Remove the column
+        newColumns = prev.filter(key => key !== columnKey);
+      } else {
+        // Add the column (no limit restriction)
+        newColumns = [...prev, columnKey];
+      }
       
       // Immediate restoration
       if (modalBodyRef.current) {
@@ -131,7 +136,7 @@ const ReportsTable: React.FC<ReportsTableProps> = ({
       
       return newColumns;
     });
-  }, [t]);
+  }, []);
 
   // Helper function to get month names
   const getMonthName = (monthValue: string): string => {
@@ -471,8 +476,8 @@ const ReportsTable: React.FC<ReportsTableProps> = ({
           
           <div className="reports-modal-body" ref={modalBodyRef}>
             <p className="reports-column-info">
-              {t('reports.pdf.selectUpTo')} <strong>14</strong> {t('reports.pdf.columns')} 
-              ({selectedColumns.length}/14 {t('reports.pdf.selected')})
+              {t('reports.pdf.selectColumns')} 
+              ({selectedColumns.length}/{availableColumns.length} {t('reports.pdf.selected')})
             </p>
             
             <div className="reports-column-grid">
@@ -482,7 +487,6 @@ const ReportsTable: React.FC<ReportsTableProps> = ({
                     type="checkbox"
                     checked={selectedColumns.includes(column.key)}
                     onChange={() => handleColumnToggle(column.key)}
-                    disabled={!selectedColumns.includes(column.key) && selectedColumns.length >= 14}
                   />
                   <span className={selectedColumns.includes(column.key) ? 'selected' : ''}>
                     {column.label}
@@ -830,7 +834,6 @@ const ReportsTable: React.FC<ReportsTableProps> = ({
         <table className="reports-table">
           <thead>
             <tr>
-              <th>{t('reports.table.id')}</th>
               <th>{t('reports.table.contract')}</th>
               <th>{t('reports.table.client')}</th>
               <th>{t('reports.table.contractDate')}</th>
@@ -851,7 +854,6 @@ const ReportsTable: React.FC<ReportsTableProps> = ({
           <tbody>
             {currentItems.map((reglement) => (
               <tr key={reglement.ID_reglement}>
-                <td>{reglement.ID_reglement}</td>
                 <td>{reglement.CONTRAT || '-'}</td>
                 <td>{reglement.CLIENT || '-'}</td>
                 <td>{formatDateTime(reglement.DATE_CONTRAT)}</td>
