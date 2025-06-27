@@ -58,35 +58,136 @@ const useResponsive = () => {
   return { isMobile, isTablet, isDesktop };
 };
 
-// Custom hook for gym tabs scroll detection - FIXED
-const useGymTabsScroll = (salles: Salle[]) => {
-  const [showArrows, setShowArrows] = useState(false);
+// Enhanced hook for gym tabs with improved scroll logic and user scroll protection
+const useEnhancedGymTabsScroll = (salles: Salle[]) => {
+  const [currentScrollIndex, setCurrentScrollIndex] = useState(0);
+  const [showLeftArrow, setShowLeftArrow] = useState(false);
+  const [showRightArrow, setShowRightArrow] = useState(false);
+  const [maxVisibleTabs, setMaxVisibleTabs] = useState(5);
+  const [isUserScrolling, setIsUserScrolling] = useState(false); // Track user scrolling
   const gymTabsRef = useRef<HTMLDivElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null); // For scroll timeout
 
-  const checkScrollable = useCallback(() => {
-    if (gymTabsRef.current) {
-      const { scrollWidth, clientWidth } = gymTabsRef.current;
-      setShowArrows(scrollWidth > clientWidth);
-    }
-  }, []);
-
+  // Adjust max visible tabs based on screen size
   useEffect(() => {
-    checkScrollable();
-    let resizeObserver: ResizeObserver | null = null;
-    
-    if (gymTabsRef.current) {
-      resizeObserver = new ResizeObserver(checkScrollable);
-      resizeObserver.observe(gymTabsRef.current);
-    }
-
-    return () => {
-      if (resizeObserver) {
-        resizeObserver.disconnect();
+    const updateMaxVisibleTabs = () => {
+      const width = window.innerWidth;
+      if (width <= 480) {
+        setMaxVisibleTabs(2);
+      } else if (width <= 768) {
+        setMaxVisibleTabs(3);
+      } else {
+        setMaxVisibleTabs(5);
       }
     };
-  }, [salles, checkScrollable]);
 
-  return { showArrows, gymTabsRef };
+    updateMaxVisibleTabs();
+    window.addEventListener('resize', updateMaxVisibleTabs);
+    return () => window.removeEventListener('resize', updateMaxVisibleTabs);
+  }, []);
+
+  // Update scroll indicators
+  const updateScrollIndicators = useCallback(() => {
+    const canScrollLeft = currentScrollIndex > 0;
+    const canScrollRight = currentScrollIndex + maxVisibleTabs < salles.length;
+    
+    setShowLeftArrow(canScrollLeft && salles.length > maxVisibleTabs);
+    setShowRightArrow(canScrollRight && salles.length > maxVisibleTabs);
+
+    // Update gradient indicators
+    if (containerRef.current) {
+      const container = containerRef.current;
+      container.classList.toggle('show-left-gradient', canScrollLeft);
+      container.classList.toggle('show-right-gradient', canScrollRight);
+    }
+  }, [currentScrollIndex, maxVisibleTabs, salles.length]);
+
+  // Update indicators when dependencies change
+  useEffect(() => {
+    updateScrollIndicators();
+  }, [updateScrollIndicators]);
+
+  // Enhanced scroll functions with user scroll tracking
+  const scrollLeft = useCallback(() => {
+    if (currentScrollIndex > 0) {
+      setIsUserScrolling(true); // Mark as user initiated scroll
+      setCurrentScrollIndex(prev => Math.max(0, prev - 1));
+      
+      // Clear the user scrolling flag after a delay
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+      scrollTimeoutRef.current = setTimeout(() => {
+        setIsUserScrolling(false);
+      }, 10000); // 2.5 seconds delay before auto-scroll can happen again
+    }
+  }, [currentScrollIndex]);
+
+  const scrollRight = useCallback(() => {
+    const maxIndex = Math.max(0, salles.length - maxVisibleTabs);
+    if (currentScrollIndex < maxIndex) {
+      setIsUserScrolling(true); // Mark as user initiated scroll
+      setCurrentScrollIndex(prev => Math.min(maxIndex, prev + 1));
+      
+      // Clear the user scrolling flag after a delay
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+      scrollTimeoutRef.current = setTimeout(() => {
+        setIsUserScrolling(false);
+      }, 10000); // 2.5 seconds delay before auto-scroll can happen again
+    }
+  }, [currentScrollIndex, maxVisibleTabs, salles.length]);
+
+  // Enhanced auto-scroll function - only works when user is not scrolling
+  const scrollToActiveGym = useCallback((activeGymIndex: number, force = false) => {
+    if (activeGymIndex === -1) return;
+    
+    // Don't auto-scroll if user is currently scrolling, unless forced
+    if (isUserScrolling && !force) return;
+    
+    // If active gym is not visible, scroll to show it
+    if (activeGymIndex < currentScrollIndex) {
+      setCurrentScrollIndex(activeGymIndex);
+    } else if (activeGymIndex >= currentScrollIndex + maxVisibleTabs) {
+      const newIndex = Math.max(0, activeGymIndex - maxVisibleTabs + 1);
+      setCurrentScrollIndex(Math.min(newIndex, salles.length - maxVisibleTabs));
+    }
+  }, [currentScrollIndex, maxVisibleTabs, salles.length, isUserScrolling]);
+
+  // Reset scroll when gym list changes significantly
+  useEffect(() => {
+    if (salles.length <= maxVisibleTabs) {
+      setCurrentScrollIndex(0);
+    } else if (currentScrollIndex >= salles.length - maxVisibleTabs) {
+      setCurrentScrollIndex(Math.max(0, salles.length - maxVisibleTabs));
+    }
+  }, [salles.length, maxVisibleTabs]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  return {
+    gymTabsRef,
+    containerRef,
+    showLeftArrow,
+    showRightArrow,
+    scrollLeft,
+    scrollRight,
+    currentScrollIndex,
+    maxVisibleTabs,
+    scrollToActiveGym,
+    needsScrolling: salles.length > maxVisibleTabs,
+    isUserScrolling,
+    showArrows: salles.length > maxVisibleTabs
+  };
 };
 
 // Custom hook for outside click detection - FIXED
@@ -179,8 +280,20 @@ const UserDashboard: React.FC = () => {
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const monthDropdownRef = useRef<HTMLDivElement | null>(null);
   
-  // Gym tabs scroll functionality - FIXED
-  const { showArrows, gymTabsRef } = useGymTabsScroll(salles);
+  // Gym tabs scroll functionality - FIXED with enhanced scroll protection
+  const {
+    gymTabsRef,
+    containerRef,
+    showLeftArrow,
+    showRightArrow,
+    scrollLeft,
+    scrollRight,
+    currentScrollIndex,
+    maxVisibleTabs,
+    scrollToActiveGym,
+    needsScrolling,
+    isUserScrolling
+  } = useEnhancedGymTabsScroll(salles);
   
   // Outside click handler for dropdown - FIXED
   useOutsideClick(dropdownRef, () => setShowDateDropdown(false));
@@ -385,6 +498,20 @@ const UserDashboard: React.FC = () => {
     
     fetchRevenueData();
   }, [selectedSalle, dateRange, dateFilterType, selectedMonth, selectedYear, activeMenuItem]);
+
+  // FIXED: Enhanced auto-scroll to active gym with smart visibility detection
+  useEffect(() => {
+    const currentSalleIndex = selectedSalle ? salles.findIndex(s => s.id_salle === selectedSalle.id_salle) : -1;
+    if (currentSalleIndex !== -1) {
+      // Only auto-scroll to active gym when the gym is completely out of view
+      const isGymVisible = currentSalleIndex >= currentScrollIndex && 
+                          currentSalleIndex < currentScrollIndex + maxVisibleTabs;
+      
+      if (!isGymVisible) {
+        scrollToActiveGym(currentSalleIndex, false); // Don't force if user is scrolling
+      }
+    }
+  }, [selectedSalle, salles, scrollToActiveGym, currentScrollIndex, maxVisibleTabs]);
 
   // Event handlers
   const handleSalleChange = (salle: Salle) => {
@@ -755,81 +882,117 @@ const UserDashboard: React.FC = () => {
     );
   };
 
-  // Enhanced gym selector with responsive features - FIXED
+  // Enhanced gym selector with responsive features and improved scroll logic - FIXED
   const renderGymSelector = () => {
     const currentSalleIndex = selectedSalle ? salles.findIndex(s => s.id_salle === selectedSalle.id_salle) : -1;
-    
+
+    // Enhanced gym click handler with forced scroll
+    const handleGymClick = (salle: Salle, index: number) => {
+      handleSalleChange(salle);
+      // Force scroll to the clicked gym (override user scrolling protection)
+      scrollToActiveGym(index, true);
+    };
+
+    const handleKeyboardNavigation = (
+      event: React.KeyboardEvent,
+      items: Salle[],
+      currentIndex: number
+    ) => {
+      let newIndex = currentIndex;
+      
+      switch (event.key) {
+        case 'ArrowLeft':
+          event.preventDefault();
+          newIndex = currentIndex > 0 ? currentIndex - 1 : items.length - 1;
+          break;
+        case 'ArrowRight':
+          event.preventDefault();
+          newIndex = currentIndex < items.length - 1 ? currentIndex + 1 : 0;
+          break;
+        case 'Home':
+          event.preventDefault();
+          newIndex = 0;
+          break;
+        case 'End':
+          event.preventDefault();
+          newIndex = items.length - 1;
+          break;
+        default:
+          return;
+      }
+      
+      handleGymClick(items[newIndex], newIndex);
+    };
+
     return (
       <div className={`customer-gym-selector ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
-        {showArrows && !isMobile && (
+        <div className="customer-gym-tabs-container" ref={containerRef}>
+          {/* Left Arrow */}
           <button 
-            className="customer-nav-arrow prev-arrow" 
-            onClick={() => scrollGymTabs('left')}
+            className={`customer-nav-arrow prev-arrow ${!showLeftArrow ? 'hidden' : ''}`}
+            onClick={scrollLeft}
+            disabled={!showLeftArrow}
             aria-label="Scroll gym tabs left"
+            type="button"
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
               <path fillRule="evenodd" d="M7.72 12.53a.75.75 0 010-1.06l7.5-7.5a.75.75 0 111.06 1.06L9.31 12l6.97 6.97a.75.75 0 11-1.06 1.06l-7.5-7.5z" clipRule="evenodd" />
             </svg>
           </button>
-        )}
-        
-        <div 
-          className="customer-gym-tabs" 
-          ref={gymTabsRef}
-          {...(isMobile ? swipeHandlers : {})}
-          onKeyDown={(e) => handleKeyboardNavigation(e, salles, currentSalleIndex)}
-          role="tablist"
-          aria-label="Gym selection tabs"
-        >
-          {salles.map((salle) => (
-            <div 
-              key={salle.id_salle} 
-              className={`customer-gym-tab ${selectedSalle && selectedSalle.id_salle === salle.id_salle ? 'active' : ''}`}
-              onClick={() => handleSalleChange(salle)}
-              role="tab"
-              aria-selected={selectedSalle?.id_salle === salle.id_salle}
-              aria-controls={`gym-panel-${salle.id_salle}`}
-              tabIndex={selectedSalle?.id_salle === salle.id_salle ? 0 : -1}
-            >
-              {salle.name}
-            </div>
-          ))}
-        </div>
-        
-        {showArrows && !isMobile && (
+
+          {/* Gym Tabs */}
+          <div 
+            className="customer-gym-tabs" 
+            ref={gymTabsRef}
+            data-gym-count={Math.min(salles.length, maxVisibleTabs)}
+            onKeyDown={(e) => handleKeyboardNavigation(e, salles, currentSalleIndex)}
+            role="tablist"
+            aria-label="Gym selection tabs"
+          >
+            {salles.slice(currentScrollIndex, currentScrollIndex + maxVisibleTabs).map((salle, index) => {
+              const actualIndex = currentScrollIndex + index;
+              const isActive = selectedSalle?.id_salle === salle.id_salle;
+              
+              return (
+                <div 
+                  key={salle.id_salle} 
+                  className={`customer-gym-tab ${isActive ? 'active' : ''}`}
+                  onClick={() => handleGymClick(salle, actualIndex)}
+                  role="tab"
+                  aria-selected={isActive}
+                  aria-controls={`gym-panel-${salle.id_salle}`}
+                  tabIndex={isActive ? 0 : -1}
+                  title={salle.name}
+                >
+                  <span className="gym-tab-text">
+                    {salle.name}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Right Arrow */}
           <button 
-            className="customer-nav-arrow next-arrow" 
-            onClick={() => scrollGymTabs('right')}
+            className={`customer-nav-arrow next-arrow ${!showRightArrow ? 'hidden' : ''}`}
+            onClick={scrollRight}
+            disabled={!showRightArrow}
             aria-label="Scroll gym tabs right"
+            type="button"
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
               <path fillRule="evenodd" d="M16.28 11.47a.75.75 0 010 1.06l-7.5 7.5a.75.75 0 01-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 011.06-1.06l7.5 7.5z" clipRule="evenodd" />
             </svg>
           </button>
-        )}
-        
-        {isMobile && showArrows && (
-          <>
-            <button 
-              className="customer-nav-arrow prev-arrow" 
-              onClick={() => scrollGymTabs('left')}
-              aria-label="Scroll gym tabs left"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <path fillRule="evenodd" d="M7.72 12.53a.75.75 0 010-1.06l7.5-7.5a.75.75 0 111.06 1.06L9.31 12l6.97 6.97a.75.75 0 11-1.06 1.06l-7.5-7.5z" clipRule="evenodd" />
-              </svg>
-            </button>
-            
-            <button 
-              className="customer-nav-arrow next-arrow" 
-              onClick={() => scrollGymTabs('right')}
-              aria-label="Scroll gym tabs right"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <path fillRule="evenodd" d="M16.28 11.47a.75.75 0 010 1.06l-7.5 7.5a.75.75 0 01-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 011.06-1.06l7.5 7.5z" clipRule="evenodd" />
-              </svg>
-            </button>
-          </>
+        </div>
+
+        {/* Optional: Gym count indicator for large lists */}
+        {salles.length > maxVisibleTabs && (
+          <div className="gym-count-indicator">
+            <span className="gym-position">
+              {Math.min(currentScrollIndex + maxVisibleTabs, salles.length)} / {salles.length}
+            </span>
+          </div>
         )}
       </div>
     );
